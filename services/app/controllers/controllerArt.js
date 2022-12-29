@@ -66,7 +66,36 @@ class ControllerArt {
         }
     }
 
-    
+    static async updateArt(req, res, next) {
+        const t = await sequelize.transaction()
+
+        try {
+            const { id } = req.params
+            const { name, price, description, CategoryId, status } = req.body
+
+            // tolong dicek lagi yg source/req files udah benar apa belum
+            // nanti AuthorId pake req user, skrg masih 1
+
+            const updatedArt = await Art.update({ name, price, description, AuthorId: 1, source: req.files[0].path, CategoryId, status }, { where: { id } })
+
+            const previews = req.files.slice(1)
+
+            const convertedPreviews = previews.map(el => {
+                el.sourceUrl = el.path
+                el.ArtId = updatedArt.dataValues.id
+                return el
+            })
+
+            const newPreviews = await Preview.bulkCreate(convertedPreviews)
+
+            t.commit()
+            updatedArt.dataValues.Previews = newPreviews
+            res.status(200).json({ updatedArt })
+
+        } catch (error) {
+            next(error)
+        }
+    }
 
 }
 
