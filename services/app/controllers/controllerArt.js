@@ -34,7 +34,8 @@ class ControllerArt {
             // console.log(arts);
             res.status(200).json(arts)
         } catch (error) {
-            next(error)
+            console.log(error);
+            // next(error)
         }
     }
 
@@ -53,6 +54,21 @@ class ControllerArt {
             next(error)
         }
     }
+
+    static async deleteArt(req, res, next) {
+        try {
+            const { id } = req.params
+
+            // kalo bukan soft delete, kek gini :
+            // await Art.destroy({ where: { id } })
+            // kalo mau soft delete kyknya mesti tambahin properti status di model Art, status kek active/inactive etc.
+
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    
 }
 
 module.exports = ControllerArt
