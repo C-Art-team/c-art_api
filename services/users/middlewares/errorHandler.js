@@ -8,6 +8,12 @@ function errorHandler(err, req, res, next) {
   ) {
     status = 400;
     message = `${err.errors.map((el) => el.message).join(", ")}`;
+  } else if (err.name === "EmailPasswordRequired") {
+    status = 400;
+    message = "Both Email and Password is required";
+  } else if (err.name === "InvalidCredentials") {
+    status = 401;
+    message = "Invalid Email or Password";
   }
 
   res.status(status).json({ status, message });

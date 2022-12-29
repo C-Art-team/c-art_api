@@ -112,6 +112,62 @@ describe("POST /register", () => {
   });
 });
 
+describe("POST /login", () => {
+  const data = {
+    email: "dodol@gmail.com",
+    password: "123456",
+  };
+  test("200 - OK", async () => {
+    const response = await request(app).post("/login").send(data);
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty("access_token", expect.any(String));
+    expect(response.body).toHaveProperty("email", "dodol@gmail.com");
+    expect(response.body).toHaveProperty("username", "dodol");
+  });
+
+  test("400 - Bad Request, Empty Email", async () => {
+    const emptyEmail = { ...data, email: "" };
+    const response = await request(app).post("/login").send(emptyEmail);
+    expect(response.status).toBe(400);
+    expect(response.body).toHaveProperty("status", 400);
+    expect(response.body).toHaveProperty(
+      "message",
+      "Both Email and Password is required"
+    );
+  });
+  test("400 - Bad Request, Empty Password", async () => {
+    const emptyPassword = { ...data, password: "" };
+    const response = await request(app).post("/login").send(emptyPassword);
+    expect(response.status).toBe(400);
+    expect(response.body).toHaveProperty("status", 400);
+    expect(response.body).toHaveProperty(
+      "message",
+      "Both Email and Password is required"
+    );
+  });
+
+  test("401 - Unauthorized, Invalid Email", async () => {
+    const invalidEmail = { ...data, email: "dodol1@gmail.com" };
+    const response = await request(app).post("/login").send(invalidEmail);
+    expect(response.status).toBe(401);
+    expect(response.body).toHaveProperty("status", 401);
+    expect(response.body).toHaveProperty(
+      "message",
+      "Invalid Email or Password"
+    );
+  });
+  test("401 - Unauthorized, Invalid Password", async () => {
+    const invalidPassword = { ...data, password: "dodol" };
+    const response = await request(app).post("/login").send(invalidPassword);
+    expect(response.status).toBe(401);
+    expect(response.body).toHaveProperty("status", 401);
+    expect(response.body).toHaveProperty(
+      "message",
+      "Invalid Email or Password"
+    );
+  });
+});
+
 afterAll(async () => {
   await queryInterface.bulkDelete("Users", null, {
     truncate: true,
