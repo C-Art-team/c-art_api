@@ -4,7 +4,7 @@ const errorHandler = (err, req, res, next) => {
 
     let status = 500
     let message = "Internal Server Error"
-    
+
     switch (err.name) {
         case "NOT FOUND":
             status = 404
@@ -16,12 +16,22 @@ const errorHandler = (err, req, res, next) => {
             message = err.errors[0].message
             break;
 
+        case "UNAUTHORIZED":
+            status = 401
+            message = "You can only update/delete your own art!"
+            break;
+
+        case "INACTIVE ART":
+            status = 400
+            message = "You can only delete active arts"
+            break;
+
         default:
             break;
     }
 
 
-    res.status(status).json({message})
+    res.status(status).json({ message })
 }
 
 

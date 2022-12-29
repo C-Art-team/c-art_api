@@ -69,6 +69,10 @@ module.exports = (sequelize, DataTypes) => {
     AuthorId: {
       type:DataTypes.INTEGER,
       allowNull:false,
+    },
+    status: {
+      type:DataTypes.STRING,
+      allowNull:false,
     }
   }, {
     sequelize,
