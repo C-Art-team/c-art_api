@@ -8,7 +8,7 @@ class ControllerArt {
             let { name, price, description, CategoryId } = req.body
 
             ////REQ.FILES RECIEVES AN ARRAY OF 4 OBJECTS. FIRST IS SOURCE FOR ART, THE REST IS FOR PREVIEWS
-            let art = await Art.create({ name, price, description, AuthorId: 1, source: req.files[0].path, CategoryId })
+            let art = await Art.create({ name, price, description, AuthorId: 1, source: req.files[0].path, CategoryId, status: 'Active' })
             let previews = req.files.slice(1)
 
             let convertedPreviews = previews.map(el => {
@@ -58,17 +58,15 @@ class ControllerArt {
     static async deleteArt(req, res, next) {
         try {
             const { id } = req.params
-
-            // kalo bukan soft delete, kek gini :
-            // await Art.destroy({ where: { id } })
-            // kalo mau soft delete kyknya mesti tambahin properti status di model Art, status kek active/inactive etc.
+            // note: status default pas create: active. Kalo mau seeding jangan lupa tambahin di seeders
+            await Art.update({ status: 'inactive' }, { where: { id } })
 
         } catch (error) {
             next(error)
         }
     }
 
-    
+
 }
 
 module.exports = ControllerArt

@@ -17,8 +17,13 @@ const errorHandler = (err, req, res, next) => {
             break;
 
         case "UNAUTHORIZED":
-            status = 403
-            message = "You can only delete your own art!"
+            status = 401
+            message = "You can only update/delete your own art!"
+            break;
+
+        case "INACTIVE ART":
+            status = 400
+            message = "You can only delete active arts"
             break;
 
         default:

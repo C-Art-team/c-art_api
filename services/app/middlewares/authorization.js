@@ -1,8 +1,8 @@
 const { Art } = require('../models')
 
-const AuthorizationDelete = async (req, res, next) => {
+const authorization = async (req, res, next) => {
     try {
-        const AuthorId = req.user.id
+        // const AuthorId = req.user.id
         const { id } = req.params
 
         const art = await Art.findOne({ where: { id } })
@@ -11,8 +11,23 @@ const AuthorizationDelete = async (req, res, next) => {
             throw { name: "NOT FOUND" }
         }
 
-        if (art.AuthorId !== AuthorId) {
+        // sementara AuthorId itu 1 semua, nanti pake req user
+        if (art.AuthorId !== 1) {
             throw { name: 'UNAUTHORIZED' }
+        }
+
+    } catch (error) {
+        next(error)
+    }
+}
+
+const checkArtStatus = async (req, res, next) => {
+    try {
+        const { id } = req.params
+
+        const art = await Art.findOne({ where: { id } })
+        if (art.status == 'inactive') {
+            throw { name: "INACTIVE ART" }
         }
 
         next()
@@ -22,4 +37,4 @@ const AuthorizationDelete = async (req, res, next) => {
     }
 }
 
-module.exports = AuthorizationDelete
+module.exports = { authorization, checkArtStatus }

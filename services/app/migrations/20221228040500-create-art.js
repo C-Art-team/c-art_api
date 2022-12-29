@@ -30,6 +30,10 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull:false
       },
+      status: {
+        type: Sequelize.STRING,
+        allowNull:false
+      },
       CategoryId: {
         type:Sequelize.INTEGER,
         references:{
