@@ -1,4 +1,4 @@
-# C-Art API Documentation
+# C-Art Users API Documentation
 
 ## Endpoints :
 
@@ -7,6 +7,7 @@ List of available endpoints:
 Public:
 
 - `POST /register`
+- `POST /login`
 
 &nbsp;
 
@@ -76,6 +77,49 @@ OR
 {
     "status": 400,
     "message": "Username already used"
+}
+```
+
+&nbsp;
+
+## 2. POST /login
+
+Request:
+
+-body:
+
+```json
+{
+  "email": "string",
+  "password": "string"
+}
+```
+
+_Response (200 - OK)_
+
+```json
+{
+  "access_token": "string",
+  "email": "string",
+  "username": "string"
+}
+```
+
+_Response (400 - Bad Request)_
+
+```json
+{
+  "status": 400,
+  "message": "Both Email and Password is required"
+}
+```
+
+_Response (401 - Unauthorized)_
+
+```json
+{
+  "status": 401,
+  "message": "Invalid Email or Password"
 }
 ```
 
