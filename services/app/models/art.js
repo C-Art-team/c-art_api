@@ -70,7 +70,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull:false,
     },
     CategoryId :  {
-      type : DataTypes.Integer,
+      type : DataTypes.INTEGER,
       allowNull : false
     }
   }, {
