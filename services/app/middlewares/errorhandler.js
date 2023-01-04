@@ -30,7 +30,7 @@ const errorHandler = (err, req, res, next) => {
             break;
     }
 
-
+    // console.log(err);
     res.status(status).json({ message })
 }
 
