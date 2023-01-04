@@ -14,6 +14,12 @@ function errorHandler(err, req, res, next) {
   } else if (err.name === "InvalidCredentials") {
     status = 401;
     message = "Invalid Email or Password";
+  } else if (err.name === "Unauthorized") {
+    status = 401;
+    message = "Please login first";
+  } else if (err.name === "JsonWebTokenError") {
+    status = 401;
+    message = "Invalid token";
   }
 
   res.status(status).json({ status, message });
