@@ -2,7 +2,7 @@ const express = require("express")
 const ControllerArt = require("../controllers/controllerArt")
 const router = express.Router()
 const fileUpload = require("../middlewares/multer");
-const { authorization, checkArtStatus } = require('../middlewares/authorization')
+const { authorization, checkArtStatus } = require('../middlewares/authorization');
 
 
 

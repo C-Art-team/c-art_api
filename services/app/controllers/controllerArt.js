@@ -6,13 +6,13 @@ class ControllerArt {
         try {
 
             let { name, price, description, CategoryId } = req.body
-
+            console.log(req.files);
             ////REQ.FILES RECIEVES AN ARRAY OF 4 OBJECTS. FIRST IS SOURCE FOR ART, THE REST IS FOR PREVIEWS
-            let art = await Art.create({ name, price, description, AuthorId: 1, source: req.files[0].path, CategoryId, status: 'Active' })
+            let art = await Art.create({ name, price, description, AuthorId: 1, source: req.files[0].publicUrl, CategoryId, status: 'Active' })
             let previews = req.files.slice(1)
 
             let convertedPreviews = previews.map(el => {
-                el.sourceUrl = el.path
+                el.sourceUrl = el.publicUrl
                 el.ArtId = art.dataValues.id
                 return el
             })
