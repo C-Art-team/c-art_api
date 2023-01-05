@@ -11,7 +11,7 @@ class ControllerArt {
         price,
         description,
         AuthorId: 1,
-        source: req.files[0].path,
+        source: req.files[0].publicUrl,
         CategoryId,
         status: "Active",
       });
@@ -29,13 +29,20 @@ class ControllerArt {
       art.dataValues.Previews = newPreviews;
       res.status(201).json({ art });
     } catch (error) {
+      console.log(error);
       next(error);
     }
   }
 
   static async getArts(req, res, next) {
     try {
-      let arts = await Art.findAll({ include: [{ model: Preview }] });
+      let arts = await Art.findAll({
+        include: [{
+          model: Preview,
+          attributes: { exclude: ['createdAt', 'updatedAt'] }
+        }],
+        attributes: { exclude: ['createdAt', 'updatedAt'] }
+      });
       // console.log(arts);
       res.status(200).json(arts);
     } catch (error) {
@@ -49,7 +56,11 @@ class ControllerArt {
       let { id } = req.params;
       let art = await Art.findOne({
         where: { id },
-        include: [{ model: Preview }],
+        include: [{
+          model: Preview,
+          attributes: { exclude: ['createdAt', 'updatedAt'] }
+        }],
+        attributes: { exclude: ['createdAt', 'updatedAt'] }
       });
 
       if (!art) {

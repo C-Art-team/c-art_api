@@ -1,3 +1,7 @@
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
+
 const express = require('express')
 const app = express()
 const cors = require('cors')
@@ -11,7 +15,7 @@ app.use(express.json())
 app.use(routers)
 app.use(errHandler)
 
-
-app.listen(PORT , () => {
-  console.log(`app launching on port ${PORT}`)
-})
+module.exports = app
+// app.listen(PORT , () => {
+//   console.log(`app launching on port ${PORT}`)
+// })
