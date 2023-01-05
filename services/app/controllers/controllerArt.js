@@ -4,6 +4,9 @@ class ControllerArt {
   static async createArt(req, res, next) {
     const t = await sequelize.transaction();
     try {
+        console.log(`test`);
+        console.log(req.files);
+        console.log(req.body);
       let { name, price, description, CategoryId } = req.body;
       ////REQ.FILES RECIEVES AN ARRAY OF 4 OBJECTS. FIRST IS SOURCE FOR ART, THE REST IS FOR PREVIEWS
       let art = await Art.create({
@@ -11,7 +14,7 @@ class ControllerArt {
         price,
         description,
         AuthorId: 1,
-        source: req.files[0].path,
+        source: req.files[0].publicUrl,
         CategoryId,
         status: "Active",
       });
@@ -29,6 +32,7 @@ class ControllerArt {
       art.dataValues.Previews = newPreviews;
       res.status(201).json({ art });
     } catch (error) {
+        console.log(error);
       next(error);
     }
   }

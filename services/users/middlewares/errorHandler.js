@@ -22,6 +22,7 @@ function errorHandler(err, req, res, next) {
     message = "Invalid token";
   }
 
+  console.log(err);
   res.status(status).json({ status, message });
 }
 
