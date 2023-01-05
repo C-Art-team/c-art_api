@@ -31,6 +31,37 @@ afterAll(() => {
         .catch((err) => console.log(err))
 })
 
+// describe("POSTONE /arts", () => {
+//     test("201 - created", (done) => {
+//         const newArtDummy = {
+//             ...artDummy, name: 'newName'
+//         }
+
+//         request(app)
+//             .post('/arts')
+//             .send(newArtDummy)
+//             .then((res) => {
+//                 console.log(res);
+//                 // if (err) return done(err);
+//                 const { body, status } = res;
+//                 const {art} = body
+//                 expect(status).toBe(201);
+//                 expect(art).toEqual(expect.any(Object));
+//                 expect(art).toHaveProperty('id', expect.any(Number));
+//                 expect(art).toHaveProperty('name', expect.any(String));
+//                 expect(art).toHaveProperty('source', expect.any(String));
+//                 expect(art).toHaveProperty('price', expect.any(Number));
+//                 expect(art).toHaveProperty('description', expect.any(String));
+//                 expect(art).toHaveProperty('AuthorId', expect.any(Number));
+//                 expect(art).toHaveProperty('status', expect.any(String));
+//                 expect(art).toHaveProperty('CategoryId', expect.any(Number));
+//                 expect(art).toHaveProperty('Previews', expect.any(Array));
+//                 return done();
+//               })
+//               .catch(err => console.log(err))
+//     })
+// })
+
 describe("FINDALL /arts", () => {
 
     test("200 - Success get arts", (done) => {
@@ -42,7 +73,6 @@ describe("FINDALL /arts", () => {
                 expect(status).toBe(200)
                 expect(Array.isArray(body)).toBeTruthy();
                 expect(body.length).toBeGreaterThan(0);
-                console.log(body);
                 done();
             })
             .catch((err => {
@@ -54,13 +84,21 @@ describe("FINDALL /arts", () => {
 describe("FINDONE /arts", () => {
     test("200 - Success get one art with params", (done) => {
         request(app)
-            .get("arts/1")
+            .get("/arts/1")
             .then((response) => {
                 const { body, status } = response
-
                 expect(status).toBe(200)
                 expect(body).toEqual(expect.any(Object))
-                expect(body).toHaveProperty('id', 'Internal Server Error');
+                expect(body).toHaveProperty('id', expect.any(Number));
+                expect(body).toHaveProperty('name', expect.any(String));
+                expect(body).toHaveProperty('source', expect.any(String));
+                expect(body).toHaveProperty('price', expect.any(Number));
+                expect(body).toHaveProperty('description', expect.any(String));
+                expect(body).toHaveProperty('AuthorId', expect.any(Number));
+                expect(body).toHaveProperty('status', expect.any(String));
+                expect(body).toHaveProperty('CategoryId', expect.any(Number));
+                expect(body).toHaveProperty('Previews', expect.any(Array));
+
                 done()
             })
             .catch((err) => {
@@ -68,6 +106,28 @@ describe("FINDONE /arts", () => {
             })
     })
 
+    test("404 - art not found", (done) => {
+        request(app)
+            .get("/arts/2")
+            .then((response) => {
+                const { body, status } = response
+
+                expect(status).toBe(404)
+                expect(body).toEqual(expect.any(Object))
+                expect(body).toHaveProperty('message', expect.any(String));
+                done()
+            })
+            .catch((err) => {
+                done(err)
+            })
+    })
 
 })
 
+// describe("PUTONE /arts/:id", () => {
+
+// })
+
+describe("DELETEONE /arts/:id", () => {
+    
+})
