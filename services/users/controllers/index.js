@@ -1,15 +1,23 @@
 const { User } = require("../models/");
-const { comparePassword, signToken, verifyToken } = require("../helpers/");
+const {
+  comparePassword,
+  signToken,
+  verifyToken,
+  signAuthToken,
+} = require("../helpers/");
 
 class Controller {
   static async register(req, res, next) {
     try {
-      const { email, password, username, preference } = req.body;
+      const { email, password, username, preference, address, phoneNumber } =
+        req.body;
       const newUser = await User.create({
         email,
         password,
         username,
         preference,
+        address,
+        phoneNumber,
       });
       res.status(201).json({ id: newUser.id, email, username, preference });
     } catch (err) {
@@ -46,7 +54,7 @@ class Controller {
     }
   }
 
-  static async authentication(req, res, next) {
+  static async authenticating(req, res, next) {
     try {
       const { access_token } = req.headers;
       if (!access_token) {
@@ -62,13 +70,36 @@ class Controller {
       if (!user) {
         throw { name: "Unauthorized" };
       }
-      res.json({
-        access_token,
+      const auth_token = signAuthToken({
         id: payload.id,
         email: payload.email,
         username: user.username,
         preference: user.preference,
       });
+      res.json({
+        auth_token,
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async editProfile(req, res, next) {
+    try {
+      const { id } = req.params;
+      const { username, preference, address, phoneNumber } = req.body;
+      const user = await User.findOne({ where: { id } });
+      if (!user) {
+        throw { name: "UserNotFound" };
+      }
+      if (!username) {
+        throw { name: "UserEmpty" };
+      }
+      await User.update(
+        { username, preference, address, phoneNumber },
+        { where: { id } }
+      );
+      res.json({ id, username, preference, address, phoneNumber });
     } catch (err) {
       next(err);
     }
