@@ -73,6 +73,20 @@ class Controller {
       next(err);
     }
   }
+
+  static async deleteAccount(req, res, next) {
+    try {
+      const { id } = req.params;
+      const user = await User.findOne({ where: { id } });
+      if (!user) {
+        throw { name: "UserNotFound" };
+      }
+      await User.destroy({ where: { id } });
+      res.json(user);
+    } catch (err) {
+      next(err);
+    }
+  }
 }
 
 module.exports = Controller;
