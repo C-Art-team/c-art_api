@@ -1,5 +1,6 @@
 const axios = require('axios')
 const appServer = process.env.APP_URL
+const FormData = require("form-data")
 
 class ControllerArt {
     static async getArts(req, res, next) {
@@ -34,34 +35,36 @@ class ControllerArt {
 
     static async addItem(req, res, next) {
         try {
-            // console.log(req.fields);
-            // console.log(req.files);
-            // console.log(req.files.uploadedFile);
+
             let itemData = new FormData()
-            itemData.append("uploadedFile", req.files.uploadedFile)
-            itemData.append("name", req.fields.name)
-            itemData.append("price", req.fields.price)
-            itemData.append("description", req.fields.description)
-            itemData.append("CategoryId", req.fields.CategoryId)
-            // console.log(itemData);
+            console.log(req.body);
+            req.files.forEach(el => {
+                itemData.append("uploadedFile", el.buffer, el.originalname)
 
-            // const response = await fetch(appServer + "arts", {
-            //     body: itemData ,
-            //     method: "post",
-            //     files: itemData.uploadedFile
-            // })
-
-            const { data } =await axios.post(appServer + "arts", itemData, {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
             })
-            console.log(data);
-            // const data = await JSON.parse(response)
-            res.status(201).json("test")
+
+            itemData.append("name", req.body.name)
+            itemData.append("price", req.body.price)
+            itemData.append("description", req.body.description)
+            itemData.append("CategoryId", req.body.CategoryId)
+    
+
+
+     const{data} =   await axios({
+                url: appServer + "arts",
+                method: "post",
+                data: itemData.getBuffer(),
+                headers: {
+           
+
+                    ...itemData.getHeaders()
+                  }
+            })
+      
+            res.status(201).json(data)
         } catch (error) {
             console.log(error);
-            next(error)
+            res.status(500).end()
         }
     }
 }

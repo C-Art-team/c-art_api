@@ -36,6 +36,10 @@ const fileUpload = multer({
     }),
 })
 
+// const fileUpload = multer({
+//     storage: multer.memoryStorage()
+// })
+
 
 
 module.exports = fileUpload
