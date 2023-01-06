@@ -40,4 +40,16 @@ class Controller {
 
     }
 
+    static async patchOrderStatus(req, res, next) {
+        const { id } = req.params
+
+        const orderPaid = await Order.findByPk(id)
+        if (!orderPaid) throw { name: 'NOT FOUND' }
+
+        await orderPaid.update({ status: 'Paid' }, { where: { id } })
+        res.status(200).json({
+            message: `Order with id ${id} has been paid`
+        })
+    }
+
 }
