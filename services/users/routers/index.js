@@ -12,4 +12,6 @@ router.use(authentication);
 
 router.patch("/edit/:id", authorization, Controller.editProfile);
 
+router.delete("/delete/:id", authorization, Controller.deleteAccount);
+
 module.exports = router;

@@ -6,6 +6,7 @@ router.post("/register", ControllerUser.register)
 router.post("/login", ControllerUser.login)
 router.use(authentication)
 
+router.delete("/delete/:id", ControllerUser.deleteAccount)
 router.patch("/edit/:id", ControllerUser.editProfile)
 
 module.exports = router

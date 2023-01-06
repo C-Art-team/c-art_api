@@ -46,6 +46,21 @@ class ControllerUser{
             next(err)
         }
     }
+    static async deleteAccount(req, res, next){
+        try {
+            const { id } = req.params
+            const { auth_token } = req.user
+            const {data} = await axios({
+                method: 'DELETE',
+                url: `${USERS_URL}delete/${id}`,
+                headers: { auth_token }
+            })
+            await redis.del("user")
+            res.json(data)
+        } catch (err) {
+            next(err)
+        }
+    }
 }
 
 module.exports = ControllerUser
