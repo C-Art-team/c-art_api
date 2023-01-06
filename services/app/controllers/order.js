@@ -1,4 +1,5 @@
 const { Order, Art } = require('../models')
+const midtransClient = require('midtrans-client');
 
 class ControllerOrder {
     static async createOrder(req, res, next) {
@@ -21,13 +22,13 @@ class ControllerOrder {
             let parameter = {
                 transaction_details: {
                     order_id: "YOUR-ORDERID-" + Math.floor(1000000 + Math.random() * 9000000),
-                    gross_amount: 100000
+                    gross_amount: (artOrdered.price * amount)
                 },
                 credit_card: {
                     "secure": true
                 },
                 customer_details: {
-                    email: user.email,
+                    email: 'test@mail.com',
                 }
             };
 
@@ -35,6 +36,7 @@ class ControllerOrder {
             res.status(200).json(midtransToken);
 
         } catch (error) {
+            console.log(error);
             next(error)
         }
 

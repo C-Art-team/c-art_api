@@ -30,6 +30,7 @@ class ControllerArt {
       res.status(201).json({ art });
 
     } catch (error) {
+      console.log(error);
       await t.rollback()
       next(error);
     }
