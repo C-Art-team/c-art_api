@@ -7,6 +7,6 @@ router.post("/login", ControllerUser.login)
 
 router.use(authentication)
 
-router.get("/test", ControllerUser.test)
+router.patch("/edit/:id", ControllerUser.editProfile)
 
 module.exports = router
