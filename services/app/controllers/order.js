@@ -1,6 +1,7 @@
 const { Order, Art } = require('../models')
+const midtransClient = require('midtrans-client');
 
-class Controller {
+class ControllerOrder {
     static async createOrder(req, res, next) {
         try {
             const { customerId, artId, amount } = req.body
@@ -21,13 +22,13 @@ class Controller {
             let parameter = {
                 transaction_details: {
                     order_id: "YOUR-ORDERID-" + Math.floor(1000000 + Math.random() * 9000000),
-                    gross_amount: 100000
+                    gross_amount: (artOrdered.price * amount)
                 },
                 credit_card: {
                     "secure": true
                 },
                 customer_details: {
-                    email: user.email,
+                    email: 'test@mail.com',
                 }
             };
 
@@ -35,6 +36,7 @@ class Controller {
             res.status(200).json(midtransToken);
 
         } catch (error) {
+            console.log(error);
             next(error)
         }
 
@@ -79,5 +81,18 @@ class Controller {
         }
     }
 
-    
+    static async cancelOrder(req, res, next) {
+        try {
+            const { id } = req.params
+            const orderCancelled = await Order.findByPk(id)
+            if (!orderCancelled) throw { name: "NOT FOUND" }
+
+            await orderCancelled.destroy({ where: { id } })
+            res.status(200).json({ message: `Order with id ${orderCancelled.id} has been cancelled` })
+        } catch (error) {
+            next(error)
+        }
+    }
 }
+
+module.exports = ControllerOrder
