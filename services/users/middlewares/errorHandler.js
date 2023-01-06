@@ -33,6 +33,7 @@ function errorHandler(err, req, res, next) {
     message = "Username cannot be empty";
   }
 
+  console.log(err);
   res.status(status).json({ status, message });
 }
 
