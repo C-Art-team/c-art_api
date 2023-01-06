@@ -31,7 +31,7 @@ const errorHandler = (err, req, res, next) => {
     }
 
     // console.log(err);
-    res.status(status).json({ message })
+    res.status(status).json({status, message })
 }
 
 

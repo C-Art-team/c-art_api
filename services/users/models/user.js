@@ -50,7 +50,9 @@ module.exports = (sequelize, DataTypes) => {
         }
       }
     },
-    preference: DataTypes.STRING
+    preference: DataTypes.STRING,
+    address: DataTypes.STRING,
+    phoneNumber: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'User',
