@@ -2,13 +2,8 @@ const { Art, Preview, sequelize } = require("../models");
 
 class ControllerArt {
   static async createArt(req, res, next) {
-    console.log(req.files)
-    console.log(req.body)
     const t = await sequelize.transaction();
     try {
-        console.log(`test`);
-        console.log(req.files);
-        console.log(req.body);
       let { name, price, description, CategoryId } = req.body;
       ////REQ.FILES RECIEVES AN ARRAY OF 4 OBJECTS. FIRST IS SOURCE FOR ART, THE REST IS FOR PREVIEWS
       let art = await Art.create({
@@ -33,16 +28,22 @@ class ControllerArt {
       await t.commit();
       art.dataValues.Previews = newPreviews;
       res.status(201).json({ art });
+
     } catch (error) {
       await t.rollback()
-      console.log(error)
       next(error);
     }
   }
 
   static async getArts(req, res, next) {
     try {
-      let arts = await Art.findAll({ include: [{ model: Preview }] });
+      let arts = await Art.findAll({
+        include: [{
+          model: Preview,
+          attributes: { exclude: ['createdAt', 'updatedAt'] }
+        }],
+        attributes: { exclude: ['createdAt', 'updatedAt'] }
+      });
       // console.log(arts);
       res.status(200).json(arts);
     } catch (error) {
@@ -56,7 +57,11 @@ class ControllerArt {
       let { id } = req.params;
       let art = await Art.findOne({
         where: { id },
-        include: [{ model: Preview }],
+        include: [{
+          model: Preview,
+          attributes: { exclude: ['createdAt', 'updatedAt'] }
+        }],
+        attributes: { exclude: ['createdAt', 'updatedAt'] }
       });
 
       if (!art) {
@@ -84,36 +89,14 @@ class ControllerArt {
 
     try {
       const { id } = req.params;
-      const { name, price, description, CategoryId, status } = req.body;
-
-      // tolong dicek lagi yg source/req files udah benar apa belum
-      // nanti AuthorId pake req user, skrg masih 1
+      const { price } = req.body;
 
       const updatedArt = await Art.update(
         {
-          name,
-          price,
-          description,
-          AuthorId: 1,
-          source: req.files[0].path,
-          CategoryId,
-          status,
+          price
         },
         { where: { id } }
-      );
-
-      const previews = req.files.slice(1);
-
-      const convertedPreviews = previews.map((el) => {
-        el.sourceUrl = el.path;
-        el.ArtId = updatedArt.dataValues.id;
-        return el;
-      });
-
-      const newPreviews = await Preview.bulkCreate(convertedPreviews);
-
-      t.commit();
-      updatedArt.dataValues.Previews = newPreviews;
+      )
       res.status(200).json({ updatedArt });
     } catch (error) {
       next(error);

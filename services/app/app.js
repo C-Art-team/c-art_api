@@ -15,7 +15,7 @@ app.use(express.json())
 app.use(routers)
 app.use(errHandler)
 
-
-app.listen(PORT , () => {
-  console.log(`app launching on port ${PORT}`)
-})
+module.exports = app
+// app.listen(PORT , () => {
+//   console.log(`app launching on port ${PORT}`)
+// })
