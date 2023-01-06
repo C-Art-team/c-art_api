@@ -5,6 +5,7 @@ class ControllerArt {
     const t = await sequelize.transaction();
     try {
       let { name, price, description, CategoryId } = req.body;
+      console.log(req.files);
       ////REQ.FILES RECIEVES AN ARRAY OF 4 OBJECTS. FIRST IS SOURCE FOR ART, THE REST IS FOR PREVIEWS
       let art = await Art.create({
         name,
@@ -18,7 +19,7 @@ class ControllerArt {
 
       let previews = req.files.slice(1);
       let convertedPreviews = previews.map((el) => {
-        el.sourceUrl = el;
+        el.sourceUrl = el.publicUrl;
         el.ArtId = art.dataValues.id;
         return el;
       });

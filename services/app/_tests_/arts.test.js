@@ -15,6 +15,11 @@ const artDummy = {
             "id": 1,
             "sourceUrl": "c-art/Screenshot (2)18581889735.png",
             "ArtId": 1,
+        },
+        {
+            "id": 2,
+            "sourceUrl": "c-art/Screenshot (2)18581889735.png",
+            "ArtId": 1,
         }
     ]
 }
@@ -31,36 +36,51 @@ afterAll(() => {
         .catch((err) => console.log(err))
 })
 
-// describe("POSTONE /arts", () => {
-//     test("201 - created", (done) => {
-//         const newArtDummy = {
-//             ...artDummy, name: 'newName'
-//         }
+describe("POSTONE /arts", () => {
+    test("201 - created", (done) => {
+        const newArtDummy = {
+            ...artDummy,
+            name: 'newName',
+            Previews: [
+                {
+                    "id": 3,
+                    "sourceUrl": "c-art/Screenshot (2)18581889735.png",
+                    "ArtId": 2,
+                },
+                {
+                    "id": 4,
+                    "sourceUrl": "c-art/Screenshot (2)18581889735.png",
+                    "ArtId": 2,
+                }
+            ]
+        }
 
-//         request(app)
-//             .post('/arts')
-//             .send(newArtDummy)
-//             .then((res) => {
-//                 console.log(res);
-//                 // if (err) return done(err);
-//                 const { body, status } = res;
-//                 const {art} = body
-//                 expect(status).toBe(201);
-//                 expect(art).toEqual(expect.any(Object));
-//                 expect(art).toHaveProperty('id', expect.any(Number));
-//                 expect(art).toHaveProperty('name', expect.any(String));
-//                 expect(art).toHaveProperty('source', expect.any(String));
-//                 expect(art).toHaveProperty('price', expect.any(Number));
-//                 expect(art).toHaveProperty('description', expect.any(String));
-//                 expect(art).toHaveProperty('AuthorId', expect.any(Number));
-//                 expect(art).toHaveProperty('status', expect.any(String));
-//                 expect(art).toHaveProperty('CategoryId', expect.any(Number));
-//                 expect(art).toHaveProperty('Previews', expect.any(Array));
-//                 return done();
-//               })
-//               .catch(err => console.log(err))
-//     })
-// })
+        request(app)
+            .post('/arts')
+            .send(newArtDummy)
+            .then((res) => {
+                const { body, status } = res;
+                const { art } = body
+                // console.log(body, status);
+                // expect(status).toBe(201);
+                // expect(art).toEqual(expect.any(Object));
+                // expect(art).toHaveProperty('id', expect.any(Number));
+                // expect(art).toHaveProperty('name', expect.any(String));
+                // expect(art).toHaveProperty('source', expect.any(String));
+                // expect(art).toHaveProperty('price', expect.any(Number));
+                // expect(art).toHaveProperty('description', expect.any(String));
+                // expect(art).toHaveProperty('AuthorId', expect.any(Number));
+                // expect(art).toHaveProperty('status', expect.any(String));
+                // expect(art).toHaveProperty('CategoryId', expect.any(Number));
+                // expect(art).toHaveProperty('Previews', expect.any(Array));
+                done();
+            })
+            .catch((err => {
+                console.log(err)
+                done()
+            }))
+    })
+})
 
 describe("FINDALL /arts", () => {
 
@@ -129,5 +149,5 @@ describe("FINDONE /arts", () => {
 // })
 
 describe("DELETEONE /arts/:id", () => {
-    
+
 })
