@@ -41,15 +41,43 @@ class Controller {
     }
 
     static async patchOrderStatus(req, res, next) {
-        const { id } = req.params
+        try {
+            const { id } = req.params
 
-        const orderPaid = await Order.findByPk(id)
-        if (!orderPaid) throw { name: 'NOT FOUND' }
+            const orderPaid = await Order.findByPk(id)
+            if (!orderPaid) throw { name: 'NOT FOUND' }
 
-        await orderPaid.update({ status: 'Paid' }, { where: { id } })
-        res.status(200).json({
-            message: `Order with id ${id} has been paid`
-        })
+            await orderPaid.update({ status: 'Paid' }, { where: { id } })
+            res.status(200).json({
+                message: `Order with id ${id} has been paid`
+            })
+
+        } catch (error) {
+            next(error)
+        }
     }
 
+    static async getAllOrders(req, res, next) {
+        try {
+            const orders = await Order.findAll()
+            res.status(200).json(orders)
+
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    static async getOneOrder(req, res, next) {
+        try {
+            const { id } = req.params
+            const orderFound = await Order.findByPk(id)
+            if (!orderFound) throw { name: "NOT FOUND" }
+            res.status(200).json(orderFound)
+
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    
 }
