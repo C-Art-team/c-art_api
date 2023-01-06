@@ -6,7 +6,7 @@ const { authorization, checkArtStatus } = require('../middlewares/authorization'
 
 
 
-router.post("/", fileUpload.array("uploadedFile", 4), ControllerArt.createArt)
+router.post("/", fileUpload.array("uploadedFile",4), ControllerArt.createArt)
 router.get("/", ControllerArt.getArts)
 router.get("/:id", ControllerArt.getOneArt)
 // router.get("/download/:id",ControllerArt.download)

@@ -4,9 +4,11 @@ class ControllerArt {
   static async createArt(req, res, next) {
     const t = await sequelize.transaction();
     try {
+
+        // console.log(req, "request");
         console.log(`test`);
-        console.log(req.files);
-        console.log(req.body);
+        console.log(req.files, "files");
+        console.log(req.body, "body");
       let { name, price, description, CategoryId } = req.body;
       ////REQ.FILES RECIEVES AN ARRAY OF 4 OBJECTS. FIRST IS SOURCE FOR ART, THE REST IS FOR PREVIEWS
       let art = await Art.create({
