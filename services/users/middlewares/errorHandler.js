@@ -1,6 +1,8 @@
 function errorHandler(err, req, res, next) {
+  console.log(err)
   let status = 500;
   let message = "Internal Server Error";
+  console.log(err);
 
   if (
     err.name === "SequelizeValidationError" ||
@@ -20,6 +22,15 @@ function errorHandler(err, req, res, next) {
   } else if (err.name === "JsonWebTokenError") {
     status = 401;
     message = "Invalid token";
+  } else if (err.name === "Forbidden") {
+    status = 403;
+    message = "You don't have access";
+  } else if (err.name === "UserNotFound") {
+    status = 404;
+    message = "User not found";
+  } else if (err.name === "UserEmpty") {
+    status = 400;
+    message = "Username cannot be empty";
   }
 
   console.log(err);

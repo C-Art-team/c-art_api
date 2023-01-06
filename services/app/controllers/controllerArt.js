@@ -2,6 +2,8 @@ const { Art, Preview, sequelize } = require("../models");
 
 class ControllerArt {
   static async createArt(req, res, next) {
+    console.log(req.files)
+    console.log(req.body)
     const t = await sequelize.transaction();
     try {
         console.log(`test`);
@@ -21,18 +23,19 @@ class ControllerArt {
 
       let previews = req.files.slice(1);
       let convertedPreviews = previews.map((el) => {
-        el.sourceUrl = el.path;
+        el.sourceUrl = el;
         el.ArtId = art.dataValues.id;
         return el;
       });
 
       let newPreviews = await Preview.bulkCreate(convertedPreviews);
 
-      t.commit();
+      await t.commit();
       art.dataValues.Previews = newPreviews;
       res.status(201).json({ art });
     } catch (error) {
-        console.log(error);
+      await t.rollback()
+      console.log(error)
       next(error);
     }
   }
