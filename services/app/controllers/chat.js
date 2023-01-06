@@ -15,13 +15,13 @@ class ControllerChat {
   static async newChat(req, res, next) {
     const t = await sequelize.transaction();
     try {
-      const { text ,category} = req.body.data;
-      const senderId = 1
+      const { text ,tag} = req.body.data;
+      const senderId = req.user.id
       const newChat = await Chat.create(
         {
           senderId,
           text,
-          tag : category
+          tag
         },
         { transaction: t }
       );
@@ -30,7 +30,7 @@ class ControllerChat {
       await t.commit()
       const chats = await Chat.findAll({
         where: {
-          [Op.or]: [{ senderId }, { tag : category }],
+          [Op.or]: [{ senderId }, { tag }],
         },
         order : [['createdAt','asc']]
       },{transaction : t});

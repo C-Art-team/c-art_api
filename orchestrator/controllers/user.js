@@ -18,6 +18,7 @@ class ControllerUser{
     }
     static async login(req, res, next){
         try {
+            console.log(req.body)
             const { email, password } = req.body
             const {data} = await axios({
                 method: 'POST',
