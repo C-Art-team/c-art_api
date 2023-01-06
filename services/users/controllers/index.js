@@ -4,6 +4,7 @@ const { comparePassword, signToken, verifyToken } = require("../helpers/");
 class Controller {
   static async register(req, res, next) {
     try {
+      console.log("lewat sini boss")
       const { email, password, username, preference } = req.body;
       const newUser = await User.create({
         email,

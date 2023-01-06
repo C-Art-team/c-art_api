@@ -4,6 +4,7 @@ const USERS_URL = process.env.USERS_URL
 class ControllerUser{
     static async register(req, res, next){
         try {
+            console.log(req.body)
             const { email, password, username, preference } = req.body
             const {data} = await axios({
                 method: 'POST',
@@ -23,7 +24,7 @@ class ControllerUser{
                 url: `${USERS_URL}login`,
                 data: { email, password }
             })
-            res.json(data)
+            res.status(200).json(data)
         } catch (err) {
             next(err)
         }

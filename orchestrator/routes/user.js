@@ -4,7 +4,6 @@ const authentication = require('../middlewares/authentication')
 
 router.post("/register", ControllerUser.register)
 router.post("/login", ControllerUser.login)
-
 router.use(authentication)
 
 router.get("/test", ControllerUser.test)

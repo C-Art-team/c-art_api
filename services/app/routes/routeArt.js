@@ -5,7 +5,6 @@ const fileUpload = require("../middlewares/multer");
 const { authorization, checkArtStatus } = require('../middlewares/authorization');
 
 
-
 router.post("/", fileUpload.array("uploadedFile", 4), ControllerArt.createArt)
 router.get("/", ControllerArt.getArts)
 router.get("/:id", ControllerArt.getOneArt)
