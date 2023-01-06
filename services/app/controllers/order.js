@@ -1,6 +1,6 @@
 const { Order, Art } = require('../models')
 
-class Controller {
+class ControllerOrder {
     static async createOrder(req, res, next) {
         try {
             const { customerId, artId, amount } = req.body
@@ -91,4 +91,6 @@ class Controller {
             next(error)
         }
     }
-}  
+}
+
+module.exports = ControllerOrder
