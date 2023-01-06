@@ -7,16 +7,16 @@ const { Server } = require("socket.io");
 // const axios = require("axios");
 const routes = require('./routes');
 const errorHandler = require('./middlewares/errorHandler')
-const formidableMiddleware = require('express-formidable');
+// const formidableMiddleware = require('express-formidable');
 
 const app = express();
 app.use(cors())
+// app.use(formidableMiddleware({
+//   encoding: 'utf-8',
+//   multiples: true
+// }));
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
-app.use(formidableMiddleware({
-  encoding: 'utf-8',
-  multiples: true
-}));
 app.use(routes)
 app.use(errorHandler)
 const httpServer = createServer(app);
