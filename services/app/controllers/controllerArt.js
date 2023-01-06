@@ -17,8 +17,9 @@ class ControllerArt {
       });
 
       let previews = req.files.slice(1);
+      console.log(previews);
       let convertedPreviews = previews.map((el) => {
-        el.sourceUrl = el;
+        el.sourceUrl = el.publicUrl;
         el.ArtId = art.dataValues.id;
         return el;
       });
@@ -30,7 +31,7 @@ class ControllerArt {
       res.status(201).json({ art });
 
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       await t.rollback()
       next(error);
     }

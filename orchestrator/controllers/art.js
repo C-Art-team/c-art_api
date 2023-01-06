@@ -63,8 +63,8 @@ class ControllerArt {
       
             res.status(201).json(data)
         } catch (error) {
-            console.log(error);
-            res.status(500).end()
+            // console.log(error);
+            next(error)
         }
     }
 }
