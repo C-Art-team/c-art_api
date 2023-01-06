@@ -26,12 +26,17 @@ const errorHandler = (err, req, res, next) => {
             message = "You can only delete active arts"
             break;
 
+        case "INVALID ORDER":
+            status = 400
+            message = "You may have placed a wrong order"
+            break;
+
         default:
             break;
     }
 
     // console.log(err);
-    res.status(status).json({status, message })
+    res.status(status).json({ status, message })
 }
 
 

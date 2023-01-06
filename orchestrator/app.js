@@ -9,7 +9,6 @@ const routes = require('./routes');
 const errorHandler = require('./middlewares/errorHandler')
 // const formidableMiddleware = require('express-formidable');
 
-
 const app = express();
 app.use(cors())
 // app.use(formidableMiddleware({
@@ -34,13 +33,14 @@ io.on("connection", (socket) => {
     socket.disconnect(true)
   });
   
-  socket.on('chat', async (msg) => {
+  socket.on('comment', async (msg) => {
+    const {text,tag} = msg
     const {data} = await axios.post('http://localhost:4002/chats',{
-      data : {text : msg,category : '3d'}
+      data : {text,tag}
     })
 
     console.log(data)
-    console.log('chat: ' + msg + socket.id);
+    console.log('chat: ' + msg.text + socket.id);
     io.emit('chat success',data)
   });
 });
