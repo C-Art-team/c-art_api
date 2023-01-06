@@ -38,6 +38,7 @@ class ControllerChat {
 
       res.status(201).json(chats)
     } catch (error) {
+      console.log(error)
       await t.rollback()
       next(error)
     }

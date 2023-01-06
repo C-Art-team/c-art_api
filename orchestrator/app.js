@@ -4,7 +4,7 @@ const cors = require('cors')
 const PORT = process.env.PORT || 4000
 const { createServer } = require("http");
 const { Server } = require("socket.io");
-const axios = require("axios");
+// const axios = require("axios");
 const routes = require('./routes');
 const errorHandler = require('./middlewares/errorHandler')
 const formidableMiddleware = require('express-formidable');
@@ -22,7 +22,7 @@ app.use(errorHandler)
 const httpServer = createServer(app);
 const io = new Server(httpServer, { 
   cors : {
-    origin: '*'
+    origin: 'http://localhost:8080'
   }
 });
 
@@ -30,18 +30,30 @@ io.on("connection", (socket) => {
   console.log('user connected')
   socket.on('disconnect', () => {
     console.log('user disconnected');
-    socket.disconnect(true)
+    // socket.disconnect(true)
   });
-  
-  socket.on('comment', async (msg) => {
-    const {text,tag} = msg
-    const {data} = await axios.post('http://localhost:4002/chats',{
-      data : {text,tag}
-    })
 
-    console.log(data)
-    console.log('chat: ' + msg.text + socket.id);
-    io.emit('chat success',data)
+  socket.on('comment product' , productId => {
+    // console.log(productId)
+    socket.join(productId)
+  })
+
+  socket.on('join room', room => {
+    console.log(room,'dari join room')
+    socket.join(room)
+  })
+
+  socket.on('group chat', msg => {
+    const {tag,text} = msg
+    console.log(text , + tag, socket.id)
+    io.to(tag).emit('group chat sucess',text)
+  })
+
+  socket.on('comment', async (msg) => {
+    const {text,productId} = msg
+    // console.log(msg)
+    console.log('chat: ' + text + socket.id);
+    io.to(productId).emit('chat success',text)
   });
 });
 
