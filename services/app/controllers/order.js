@@ -79,5 +79,16 @@ class Controller {
         }
     }
 
-    
-}
+    static async cancelOrder(req, res, next) {
+        try {
+            const { id } = req.params
+            const orderCancelled = await Order.findByPk(id)
+            if (!orderCancelled) throw { name: "NOT FOUND" }
+
+            await orderCancelled.destroy({ where: { id } })
+            res.status(200).json({ message: `Order with id ${orderCancelled.id} has been cancelled` })
+        } catch (error) {
+            next(error)
+        }
+    }
+}  
