@@ -2,6 +2,23 @@ const app = require("../app");
 const request = require("supertest");
 const { sequelize } = require("../models/");
 const { queryInterface } = sequelize;
+const { signToken } = require("../helpers/");
+
+const validToken = signToken({
+  id: 1,
+  email: "dodol@gmail.com",
+});
+const noUserToken = signToken({
+  id: 987654321,
+  email: "123456789@gmail.com",
+});
+const user = {
+  access_token: 1,
+  id: 1,
+  email: "dodol@gmail.com",
+  username: "dodol26",
+  preference: "Image Asset",
+};
 
 describe("POST /register", () => {
   const data = {
@@ -123,6 +140,7 @@ describe("POST /login", () => {
     expect(response.body).toHaveProperty("access_token", expect.any(String));
     expect(response.body).toHaveProperty("email", "dodol@gmail.com");
     expect(response.body).toHaveProperty("username", "dodol");
+    expect(response.body).toHaveProperty("preference");
   });
 
   test("400 - Bad Request, Empty Email", async () => {
@@ -165,6 +183,96 @@ describe("POST /login", () => {
       "message",
       "Invalid Email or Password"
     );
+  });
+});
+
+describe("PATCH /edit/:id", () => {
+  const data = {
+    username: "dodol26",
+    preference: ["Image Asset"],
+    address: "Jakarta",
+    phoneNumber: "08123456789",
+  };
+  test("200 - OK", async () => {
+    const response = await request(app).patch("/edit/1").send(data);
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty("id", "1");
+    expect(response.body).toHaveProperty("username", "dodol26");
+    expect(response.body).toHaveProperty("preference", ["Image Asset"]);
+    expect(response.body).toHaveProperty("address", "Jakarta");
+    expect(response.body).toHaveProperty("phoneNumber", "08123456789");
+  });
+
+  test("404 - Not Found", async () => {
+    const response = await request(app).patch("/edit/100").send(data);
+    expect(response.status).toBe(404);
+    expect(response.body).toHaveProperty("status", 404);
+    expect(response.body).toHaveProperty("message", "User not found");
+  });
+});
+
+describe("GET /authenticating", () => {
+  test("200 - OK", async () => {
+    const response = await request(app)
+      .get("/authenticating")
+      .set({ access_token: validToken });
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty("id", 1);
+    expect(response.body).toHaveProperty("email", "dodol@gmail.com");
+    expect(response.body).toHaveProperty("username", "dodol26");
+    expect(response.body).toHaveProperty("preference", "Image Asset");
+  });
+
+  test("401 - Unauthorized, No token", async () => {
+    const response = await request(app).get("/authenticating");
+    expect(response.status).toBe(401);
+    expect(response.body).toHaveProperty("status", 401);
+    expect(response.body).toHaveProperty("message", "Please login first");
+  });
+  test("401 - Unauthorized, No user token", async () => {
+    const access_token = noUserToken;
+    const response = await request(app)
+      .get("/authenticating")
+      .set({ access_token });
+    expect(response.status).toBe(401);
+    expect(response.body).toHaveProperty("status", 401);
+    expect(response.body).toHaveProperty("message", "Please login first");
+  });
+  test("401 - Unauthorized, JsonWebTokenError", async () => {
+    const access_token = { access_token: "" };
+    const response = await request(app)
+      .get("/authenticating")
+      .set({ access_token });
+    expect(response.status).toBe(401);
+    expect(response.body).toHaveProperty("status", 401);
+    expect(response.body).toHaveProperty("message", "Invalid token");
+  });
+});
+
+describe("GET /profile", () => {
+  test("200 - OK", async () => {
+    const response = await request(app).get("/profile").set(user);
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty("id", 1);
+    expect(response.body).toHaveProperty("email", "dodol@gmail.com");
+    expect(response.body).toHaveProperty("username", "dodol26");
+    expect(response.body).toHaveProperty("preference", "Image Asset");
+    expect(response.body).toHaveProperty("address", "Jakarta");
+    expect(response.body).toHaveProperty("phoneNumber", "08123456789");
+  });
+
+  test("401 - Unauthorized, No token", async () => {
+    const response = await request(app).get("/profile");
+    expect(response.status).toBe(401);
+    expect(response.body).toHaveProperty("status", 401);
+    expect(response.body).toHaveProperty("message", "Please login first");
+  });
+  test("404 - Not Found", async () => {
+    const invalidUser = { ...user, id: 987654321 };
+    const response = await request(app).get("/profile").set(invalidUser);
+    expect(response.status).toBe(404);
+    expect(response.body).toHaveProperty("status", 404);
+    expect(response.body).toHaveProperty("message", "User not found");
   });
 });
 
