@@ -3,6 +3,7 @@ const request = require("supertest");
 const { sequelize } = require("../models/");
 const { queryInterface } = sequelize;
 const { signToken } = require("../helpers/");
+const { User } = require("../models/");
 
 const validToken = signToken({
   id: 1,
@@ -19,6 +20,10 @@ const user = {
   username: "dodol26",
   preference: "Image Asset",
 };
+
+beforeEach(() => {
+  jest.restoreAllMocks();
+});
 
 describe("POST /register", () => {
   const data = {
@@ -127,6 +132,14 @@ describe("POST /register", () => {
     expect(response.body).toHaveProperty("status", 400);
     expect(response.body).toHaveProperty("message", "Username already used");
   });
+
+  test("500 - Internal Server Error", async () => {
+    jest.spyOn(User, "create").mockRejectedValue("Error");
+    const response = await request(app).post("/register").send(data);
+    expect(response.status).toBe(500);
+    expect(response.body).toHaveProperty("status", 500);
+    expect(response.body).toHaveProperty("message", "Internal Server Error");
+  });
 });
 
 describe("POST /login", () => {
@@ -184,6 +197,14 @@ describe("POST /login", () => {
       "Invalid Email or Password"
     );
   });
+
+  test("500 - Internal Server Error", async () => {
+    jest.spyOn(User, "findOne").mockRejectedValue("Error");
+    const response = await request(app).post("/login").send(data);
+    expect(response.status).toBe(500);
+    expect(response.body).toHaveProperty("status", 500);
+    expect(response.body).toHaveProperty("message", "Internal Server Error");
+  });
 });
 
 describe("PATCH /edit/:id", () => {
@@ -203,11 +224,33 @@ describe("PATCH /edit/:id", () => {
     expect(response.body).toHaveProperty("phoneNumber", "08123456789");
   });
 
+  test("400 - Bad Request, User Empty", async () => {
+    const emptyUser = { ...data, username: "" };
+    const response = await request(app).patch("/edit/1").send(emptyUser);
+    expect(response.status).toBe(400);
+    expect(response.body).toHaveProperty("status", 400);
+    expect(response.body).toHaveProperty("message", "Username cannot be empty");
+  });
   test("404 - Not Found", async () => {
     const response = await request(app).patch("/edit/100").send(data);
     expect(response.status).toBe(404);
     expect(response.body).toHaveProperty("status", 404);
     expect(response.body).toHaveProperty("message", "User not found");
+  });
+
+  test("500 - Internal Server Error, findOne", async () => {
+    jest.spyOn(User, "findOne").mockRejectedValue("Error");
+    const response = await request(app).patch("/edit/1").send(data);
+    expect(response.status).toBe(500);
+    expect(response.body).toHaveProperty("status", 500);
+    expect(response.body).toHaveProperty("message", "Internal Server Error");
+  });
+  test("500 - Internal Server Error, update", async () => {
+    jest.spyOn(User, "update").mockRejectedValue("Error");
+    const response = await request(app).patch("/edit/1").send(data);
+    expect(response.status).toBe(500);
+    expect(response.body).toHaveProperty("status", 500);
+    expect(response.body).toHaveProperty("message", "Internal Server Error");
   });
 });
 
@@ -247,6 +290,16 @@ describe("GET /authenticating", () => {
     expect(response.body).toHaveProperty("status", 401);
     expect(response.body).toHaveProperty("message", "Invalid token");
   });
+
+  test("500 - Internal Server Error", async () => {
+    jest.spyOn(User, "findOne").mockRejectedValue("Error");
+    const response = await request(app)
+      .get("/authenticating")
+      .set({ access_token: validToken });
+    expect(response.status).toBe(500);
+    expect(response.body).toHaveProperty("status", 500);
+    expect(response.body).toHaveProperty("message", "Internal Server Error");
+  });
 });
 
 describe("GET /profile", () => {
@@ -273,6 +326,65 @@ describe("GET /profile", () => {
     expect(response.status).toBe(404);
     expect(response.body).toHaveProperty("status", 404);
     expect(response.body).toHaveProperty("message", "User not found");
+  });
+
+  test("500 - Internal Server Error", async () => {
+    jest.spyOn(User, "findOne").mockRejectedValue("Error");
+    const response = await request(app).get("/profile").set(user);
+    expect(response.status).toBe(500);
+    expect(response.body).toHaveProperty("status", 500);
+    expect(response.body).toHaveProperty("message", "Internal Server Error");
+  });
+});
+
+describe("DELETE /delete/:id", () => {
+  test("401 - Unauthorized, No token", async () => {
+    const response = await request(app).delete("/delete/1");
+    expect(response.status).toBe(401);
+    expect(response.body).toHaveProperty("status", 401);
+    expect(response.body).toHaveProperty("message", "Please login first");
+  });
+  test("403 - Forbidden", async () => {
+    const invalidUser = { ...user, id: 987654321 };
+    const response = await request(app).delete("/delete/1").set(invalidUser);
+    expect(response.status).toBe(403);
+    expect(response.body).toHaveProperty("status", 403);
+    expect(response.body).toHaveProperty("message", "You don't have access");
+  });
+  test("404 - Not Found", async () => {
+    const invalidUser = { ...user, id: 987654321 };
+    const response = await request(app)
+      .delete("/delete/987654321")
+      .set(invalidUser);
+    expect(response.status).toBe(404);
+    expect(response.body).toHaveProperty("status", 404);
+    expect(response.body).toHaveProperty("message", "User not found");
+  });
+
+  test("500 - Internal Server Error, findOne", async () => {
+    jest.spyOn(User, "findOne").mockRejectedValue("Error");
+    const response = await request(app).delete("/delete/1").set(user);
+    expect(response.status).toBe(500);
+    expect(response.body).toHaveProperty("status", 500);
+    expect(response.body).toHaveProperty("message", "Internal Server Error");
+  });
+  test("500 - Internal Server Error, destroy", async () => {
+    jest.spyOn(User, "destroy").mockRejectedValue("Error");
+    const response = await request(app).delete("/delete/1").set(user);
+    expect(response.status).toBe(500);
+    expect(response.body).toHaveProperty("status", 500);
+    expect(response.body).toHaveProperty("message", "Internal Server Error");
+  });
+
+  test("200 - OK", async () => {
+    const response = await request(app).delete("/delete/1").set(user);
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty("id", 1);
+    expect(response.body).toHaveProperty("email", "dodol@gmail.com");
+    expect(response.body).toHaveProperty("username", "dodol26");
+    expect(response.body).toHaveProperty("preference", "Image Asset");
+    expect(response.body).toHaveProperty("address", "Jakarta");
+    expect(response.body).toHaveProperty("phoneNumber", "08123456789");
   });
 });
 
