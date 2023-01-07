@@ -5,11 +5,11 @@ const redis = require("../config/ioredis");
 class ControllerUser{
     static async register(req, res, next){
         try {
-            const { email, password, username, preference, address, phoneNumber } = req.body
+            const { email, password, username } = req.body
             const {data} = await axios({
                 method: 'POST',
                 url: `${USERS_URL}register`,
-                data: { email, password, username, preference, address, phoneNumber }
+                data: { email, password, username }
             })
             res.status(201).json(data)
         } catch (err) {
@@ -18,7 +18,6 @@ class ControllerUser{
     }
     static async login(req, res, next){
         try {
-            console.log(req.body)
             const { email, password } = req.body
             const {data} = await axios({
                 method: 'POST',
@@ -34,11 +33,9 @@ class ControllerUser{
         try {
             const { id } = req.params
             const { username, preference, address, phoneNumber } = req.body
-            const { auth_token } = req.user
             const {data} = await axios({
                 method: 'PATCH',
                 url: `${USERS_URL}edit/${id}`,
-                headers: { auth_token },
                 data: { username, preference, address, phoneNumber }
             })
             await redis.del("user");
@@ -50,13 +47,25 @@ class ControllerUser{
     static async deleteAccount(req, res, next){
         try {
             const { id } = req.params
-            const { auth_token } = req.user
+            const { access_token, user } = req.user;
             const {data} = await axios({
                 method: 'DELETE',
                 url: `${USERS_URL}delete/${id}`,
-                headers: { auth_token }
+                headers: { access_token, ...user }
             })
             await redis.del("user")
+            res.json(data)
+        } catch (err) {
+            next(err)
+        }
+    }
+    static async userProfile(req, res, next){
+        try {
+            const { access_token, user } = req.user;
+            const {data} = await axios({
+                url: `${USERS_URL}profile`,
+                headers: { access_token, ...user }
+            })
             res.json(data)
         } catch (err) {
             next(err)

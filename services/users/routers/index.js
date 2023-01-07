@@ -6,11 +6,13 @@ const authorization = require("../middlewares/authorization");
 router.post("/register", Controller.register);
 router.post("/login", Controller.login);
 
+router.patch("/edit/:id", Controller.editProfile);
+
 router.get("/authenticating", Controller.authenticating);
 
 router.use(authentication);
 
-router.patch("/edit/:id", authorization, Controller.editProfile);
+router.get("/profile", Controller.userProfile)
 
 router.delete("/delete/:id", authorization, Controller.deleteAccount);
 

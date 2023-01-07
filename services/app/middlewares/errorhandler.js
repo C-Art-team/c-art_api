@@ -1,7 +1,6 @@
 
 
 const errorHandler = (err, req, res, next) => {
-
     let status = 500
     let message = "Internal Server Error"
 
@@ -41,6 +40,11 @@ const errorHandler = (err, req, res, next) => {
             message = "You must insert the correct input"
             break;
 
+        case "NO TOKEN":
+            status = 401
+            message = "Please login first"
+            break;
+            
         default:
             break;
     }

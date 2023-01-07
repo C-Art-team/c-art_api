@@ -5,7 +5,7 @@ class ControllerCategory {
     try {
       const categories = await Category.findAll({
         attributes: {
-          exclude: ['id', 'createdAt', 'updatedAt'],
+          exclude: ['createdAt', 'updatedAt'],
           order: [['name', 'ASC']]
         }
       });

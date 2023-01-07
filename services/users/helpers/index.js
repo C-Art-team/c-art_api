@@ -2,8 +2,6 @@ const { hashPassword, comparePassword } = require("./bcryptjs");
 const {
   signToken,
   verifyToken,
-  signAuthToken,
-  verifyAuthToken,
 } = require("./jsonwebtoken");
 
 module.exports = {
@@ -11,6 +9,4 @@ module.exports = {
   comparePassword,
   signToken,
   verifyToken,
-  signAuthToken,
-  verifyAuthToken,
 };
