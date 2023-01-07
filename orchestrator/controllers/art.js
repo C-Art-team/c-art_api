@@ -47,20 +47,20 @@ class ControllerArt {
             itemData.append("price", req.body.price)
             itemData.append("description", req.body.description)
             itemData.append("CategoryId", req.body.CategoryId)
-    
 
 
-     const{data} =   await axios({
+
+            const { data } = await axios({
                 url: appServer + "arts",
                 method: "post",
                 data: itemData.getBuffer(),
                 headers: {
-           
+
 
                     ...itemData.getHeaders()
-                  }
+                }
             })
-      
+
             res.status(201).json(data)
         } catch (error) {
             console.log(error);
