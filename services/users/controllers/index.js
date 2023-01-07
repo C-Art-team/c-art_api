@@ -76,6 +76,7 @@ class Controller {
     try {
       const { id } = req.params;
       const { username, preference, address, phoneNumber } = req.body;
+      const uniqPreference = [...new Set(preference)];
       const user = await User.findOne({ where: { id } });
       if (!user) {
         throw { name: "UserNotFound" };
@@ -84,10 +85,21 @@ class Controller {
         throw { name: "UserEmpty" };
       }
       await User.update(
-        { username, preference: preference.join(", "), address, phoneNumber },
+        {
+          username,
+          preference: uniqPreference.join(", "),
+          address,
+          phoneNumber,
+        },
         { where: { id } }
       );
-      res.json({ id, username, preference, address, phoneNumber });
+      res.json({
+        id,
+        username,
+        preference: uniqPreference,
+        address,
+        phoneNumber,
+      });
     } catch (err) {
       next(err);
     }
