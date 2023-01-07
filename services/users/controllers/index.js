@@ -3,14 +3,12 @@ const {
   comparePassword,
   signToken,
   verifyToken,
-  signAuthToken,
 } = require("../helpers/");
 
 class Controller {
   static async register(req, res, next) {
     try {
-      const { email, password, username, preference, address, phoneNumber } =
-        req.body;
+      const { email, password, username, preference, address, phoneNumber } = req.body;
       const newUser = await User.create({
         email,
         password,
@@ -70,14 +68,11 @@ class Controller {
       if (!user) {
         throw { name: "Unauthorized" };
       }
-      const auth_token = signAuthToken({
+      res.json({
         id: payload.id,
         email: payload.email,
         username: user.username,
         preference: user.preference,
-      });
-      res.json({
-        auth_token,
       });
     } catch (err) {
       next(err);
@@ -96,7 +91,7 @@ class Controller {
         throw { name: "UserEmpty" };
       }
       await User.update(
-        { username, preference, address, phoneNumber },
+        { username, preference : preference.join(', '), address, phoneNumber },
         { where: { id } }
       );
       res.json({ id, username, preference, address, phoneNumber });

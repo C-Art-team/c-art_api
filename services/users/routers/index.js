@@ -10,7 +10,7 @@ router.get("/authenticating", Controller.authenticating);
 
 router.use(authentication);
 
-router.patch("/edit/:id", authorization, Controller.editProfile);
+router.patch("/edit/:id", Controller.editProfile);
 
 router.delete("/delete/:id", authorization, Controller.deleteAccount);
 

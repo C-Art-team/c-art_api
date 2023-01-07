@@ -12,11 +12,11 @@ module.exports = {
       text: {
         type: Sequelize.STRING
       },
-      senderId: {
-        type: Sequelize.INTEGER
+      sender: {
+        type: Sequelize.STRING
       },
-      receiverId: {
-        type: Sequelize.INTEGER
+      receiver: {
+        type: Sequelize.STRING
       },
       tag: {
         type: Sequelize.STRING
