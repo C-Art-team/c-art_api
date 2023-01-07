@@ -1,9 +1,11 @@
-const { Art, Preview, sequelize } = require("../models");
+const { Art, Preview, sequelize, Category } = require("../models");
+const { Op } = require('sequelize')
 
 class ControllerArt {
   static async createArt(req, res, next) {
     const t = await sequelize.transaction();
     try {
+      const AuthorId = req.user.id
       let { name, price, description, CategoryId } = req.body;
       // console.log(req.files);
       ////REQ.FILES RECIEVES AN ARRAY OF 4 OBJECTS. FIRST IS SOURCE FOR ART, THE REST IS FOR PREVIEWS
@@ -11,7 +13,7 @@ class ControllerArt {
         name,
         price,
         description,
-        AuthorId: 1,
+        AuthorId,
         source: req.files[0].publicUrl,
         CategoryId,
         status: "Active",
@@ -38,13 +40,26 @@ class ControllerArt {
 
   static async getArts(req, res, next) {
     try {
-      let arts = await Art.findAll({
+      const {filter, search} = req.query
+      let option = {
         include: [{
           model: Preview,
           attributes: { exclude: ['createdAt', 'updatedAt'] }
         }],
         attributes: { exclude: ['createdAt', 'updatedAt'] }
-      });
+      }
+      let where = {}
+      if(filter){
+        where.CategoryId = filter
+      }
+      if(search){
+        where.name = {[Op.iLike]: `%${search}%`}
+      }
+      if(where){
+        option.where = where
+      }
+      console.log(option)
+      let arts = await Art.findAll(option);
       // console.log(arts);
       res.status(200).json(arts);
     } catch (error) {
@@ -60,6 +75,10 @@ class ControllerArt {
         where: { id },
         include: [{
           model: Preview,
+          attributes: { exclude: ['createdAt', 'updatedAt'] }
+        }],
+        include: [{
+          model: Category,
           attributes: { exclude: ['createdAt', 'updatedAt'] }
         }],
         attributes: { exclude: ['createdAt', 'updatedAt'] }

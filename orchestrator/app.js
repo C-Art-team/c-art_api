@@ -1,7 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-// const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 4000;
 const { createServer } = require("http");
 const { Server } = require("socket.io");
 const axios = require("axios");
@@ -61,6 +61,6 @@ io.on("connection", (socket) => {
   });
 });
 
-// httpServer.listen(PORT);
+httpServer.listen(PORT);
 
-module.exports = app;
+module.exports = httpServer;
