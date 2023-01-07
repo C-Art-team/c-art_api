@@ -2,43 +2,39 @@ const { Op } = require("sequelize");
 const { Chat, sequelize } = require("../models");
 
 class ControllerChat {
-  static async getAll(req, res, next) {
+  static async getAllForumChat(req, res, next) {
     try {
-      const { senderId } = req.user.id;
-      const chats = await Chat.findAll({ where: { senderId } });
+      const { tag } = req.params;
+      const chats = await Chat.findAll({ where: {tag}} );
       res.status(200).json(chats);
     } catch (error) {
+      console.log(error)
       next(error);
     }
   }
 
-  static async newChat(req, res, next) {
-    const t = await sequelize.transaction();
+  static async newChatForum(req, res, next) {
     try {
-      const { text ,tag} = req.body.data;
-      const senderId = req.user.id
+      console.log(req.body)
+      const { text ,tag } = req.body.payload;
+      const { username} = req.body.userData.user;
+      const sender = username
       const newChat = await Chat.create(
         {
-          senderId,
+          sender,
           text,
           tag
-        },
-        { transaction: t }
+        }
       );
       console.log(newChat)
-
-      await t.commit()
       const chats = await Chat.findAll({
-        where: {
-          [Op.or]: [{ senderId }, { tag }],
-        },
+        where:{tag},
         order : [['createdAt','asc']]
-      },{transaction : t});
+      });
       console.log(chats,'daro services')
-
       res.status(201).json(chats)
     } catch (error) {
-      await t.rollback()
+      console.log(error)
       next(error)
     }
   }
