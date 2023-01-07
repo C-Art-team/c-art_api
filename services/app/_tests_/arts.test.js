@@ -36,51 +36,51 @@ afterAll(() => {
         .catch((err) => console.log(err))
 })
 
-describe("POSTONE /arts", () => {
-    test("201 - created", (done) => {
-        const newArtDummy = {
-            ...artDummy,
-            name: 'newName',
-            Previews: [
-                {
-                    "id": 3,
-                    "sourceUrl": "c-art/Screenshot (2)18581889735.png",
-                    "ArtId": 2,
-                },
-                {
-                    "id": 4,
-                    "sourceUrl": "c-art/Screenshot (2)18581889735.png",
-                    "ArtId": 2,
-                }
-            ]
-        }
+// describe("POSTONE /arts", () => {
+//     test("201 - created", (done) => {
+//         const newArtDummy = {
+//             ...artDummy,
+//             name: 'newName',
+//             Previews: [
+//                 {
+//                     "id": 3,
+//                     "sourceUrl": "c-art/Screenshot (2)18581889735.png",
+//                     "ArtId": 2,
+//                 },
+//                 {
+//                     "id": 4,
+//                     "sourceUrl": "c-art/Screenshot (2)18581889735.png",
+//                     "ArtId": 2,
+//                 }
+//             ]
+//         }
 
-        request(app)
-            .post('/arts')
-            .send(newArtDummy)
-            .then((res) => {
-                const { body, status } = res;
-                const { art } = body
-                // console.log(body, status);
-                // expect(status).toBe(201);
-                // expect(art).toEqual(expect.any(Object));
-                // expect(art).toHaveProperty('id', expect.any(Number));
-                // expect(art).toHaveProperty('name', expect.any(String));
-                // expect(art).toHaveProperty('source', expect.any(String));
-                // expect(art).toHaveProperty('price', expect.any(Number));
-                // expect(art).toHaveProperty('description', expect.any(String));
-                // expect(art).toHaveProperty('AuthorId', expect.any(Number));
-                // expect(art).toHaveProperty('status', expect.any(String));
-                // expect(art).toHaveProperty('CategoryId', expect.any(Number));
-                // expect(art).toHaveProperty('Previews', expect.any(Array));
-                done();
-            })
-            .catch((err => {
-                console.log(err)
-                done()
-            }))
-    })
-})
+//         request(app)
+//             .post('/arts')
+//             .send(newArtDummy)
+//             .then((res) => {
+//                 const { body, status } = res;
+//                 const { art } = body
+//                 // console.log(body, status);
+//                 // expect(status).toBe(201);
+//                 // expect(art).toEqual(expect.any(Object));
+//                 // expect(art).toHaveProperty('id', expect.any(Number));
+//                 // expect(art).toHaveProperty('name', expect.any(String));
+//                 // expect(art).toHaveProperty('source', expect.any(String));
+//                 // expect(art).toHaveProperty('price', expect.any(Number));
+//                 // expect(art).toHaveProperty('description', expect.any(String));
+//                 // expect(art).toHaveProperty('AuthorId', expect.any(Number));
+//                 // expect(art).toHaveProperty('status', expect.any(String));
+//                 // expect(art).toHaveProperty('CategoryId', expect.any(Number));
+//                 // expect(art).toHaveProperty('Previews', expect.any(Array));
+//                 done();
+//             })
+//             .catch((err => {
+//                 console.log(err)
+//                 done()
+//             }))
+//     })
+// })
 
 describe("FINDALL /arts", () => {
 
@@ -126,7 +126,7 @@ describe("FINDONE /arts", () => {
             })
     })
 
-    test("404 - art not found", (done) => {
+    test("404 - Fail art not found", (done) => {
         request(app)
             .get("/arts/2")
             .then((response) => {
@@ -148,6 +148,6 @@ describe("FINDONE /arts", () => {
 
 // })
 
-describe("DELETEONE /arts/:id", () => {
+// describe("DELETEONE /arts/:id", () => {
 
-})
+// })
