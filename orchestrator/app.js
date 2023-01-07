@@ -10,7 +10,9 @@ const errorHandler = require("./middlewares/errorHandler");
 const authGenerator = require("./helpers/auth");
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin : "http://localhost:8080"
+}));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(routes);

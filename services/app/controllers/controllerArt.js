@@ -18,7 +18,7 @@ class ControllerArt {
 
       let previews = req.files.slice(1);
       let convertedPreviews = previews.map((el) => {
-        el.sourceUrl = el;
+        el.sourceUrl = el.publicUrl;
         el.ArtId = art.dataValues.id;
         return el;
       });
