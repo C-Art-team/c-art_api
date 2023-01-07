@@ -5,9 +5,11 @@ const FormData = require("form-data");
 class ControllerArt {
   static async getArts(req, res, next) {
     try {
+      const {filter, search} = req.query
       const { data } = await axios({
         url: appServer + "arts",
         method: "get",
+        params: {filter, search}
       });
 
       res.status(200).json(data);
@@ -33,6 +35,7 @@ class ControllerArt {
 
   static async addItem(req, res, next) {
     try {
+      const { access_token, user } = req.user;
       console.log(req.files);
       let itemData = new FormData();
       console.log(req.body);
@@ -51,6 +54,8 @@ class ControllerArt {
         data: itemData.getBuffer(),
         headers: {
           ...itemData.getHeaders(),
+          access_token,
+          ...user
         },
       });
 
