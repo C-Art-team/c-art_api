@@ -4,7 +4,8 @@ const midtransClient = require('midtrans-client');
 class ControllerOrder {
     static async createOrder(req, res, next) {
         try {
-            const { customerId, artId, amount } = req.body
+            const customerId = req.user.id
+            const { artId, amount } = req.body
             if (!artId) throw { name: 'INVALID ORDER' }
 
             const artOrdered = await Art.findByPk(artId)
@@ -26,6 +27,7 @@ class ControllerOrder {
     static async generateMidtransToken(req, res, next) {
         try {
             const { id } = req.params
+            const email = req.user.email
             if (!id) throw { name: 'NOT FOUND' }
 
             const order = await Order.findOne({
@@ -40,19 +42,20 @@ class ControllerOrder {
             let snap = new midtransClient.Snap({
                 // Set to true if you want Production Environment (accept real transaction).
                 isProduction: false,
-                serverKey: 'SB-Mid-server-YXWaZZYi87x3XeIMWIigtYDb'
+                serverKey: process.env.MIDTRANS_TOKEN
             });
 
             let parameter = {
                 transaction_details: {
-                    order_id: "YOUR-ORDERID-" + Math.floor(1000000 + Math.random() * 9000000),
+                    // order_id: "YOUR-ORDERID-" + Math.floor(1000000 + Math.random() * 9000000),
+                    order_id: `${id}-${new Date().getTime()}`,
                     gross_amount: (order.Art.price * order.amount)
                 },
                 credit_card: {
                     "secure": true
                 },
                 customer_details: {
-                    email: 'test@mail.com',
+                    email,
                 }
             };
 
@@ -83,12 +86,14 @@ class ControllerOrder {
 
     static async getAllOrders(req, res, next) {
         try {
+            const customerId = req.user.id
             const orders = await Order.findAll({
                 attributes: { exclude: ['createdAt', 'updatedAt'] },
                 include: {
                     model: Art,
                     attributes: { exclude: ['createdAt', 'updatedAt'] }
-                }
+                },
+                where: { customerId }
             })
             res.status(200).json(orders)
 
@@ -100,13 +105,14 @@ class ControllerOrder {
     static async getOneOrder(req, res, next) {
         try {
             const { id } = req.params
+            const customerId = req.user.id
             const orderFound = await Order.findOne({
                 attributes: { exclude: ['createdAt', 'updatedAt'] },
                 include: {
                     model: Art,
                     attributes: { exclude: ['createdAt', 'updatedAt'] }
                 },
-                where: { id }
+                where: { id, customerId }
             })
             if (!orderFound) throw { name: "NOT FOUND" }
             res.status(200).json(orderFound)
@@ -119,10 +125,11 @@ class ControllerOrder {
     static async cancelOrder(req, res, next) {
         try {
             const { id } = req.params
+            const customerId = req.user.id
             const orderCancelled = await Order.findByPk(id)
             if (!orderCancelled) throw { name: "NOT FOUND" }
 
-            await orderCancelled.destroy({ where: { id } })
+            await orderCancelled.destroy({ where: { id, customerId } })
             res.status(200).json({ message: `Order with id ${orderCancelled.id} has been cancelled` })
         } catch (error) {
             next(error)

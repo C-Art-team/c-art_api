@@ -2,6 +2,7 @@ const express = require("express")
 const ControllerArt = require("../controllers/art")
 const router = express.Router()
 const multer = require("multer")
+const authentication = require('../middlewares/authentication')
 
 const upload = multer({
     storage:multer.memoryStorage()
@@ -9,6 +10,9 @@ const upload = multer({
 
 router.get("/", ControllerArt.getArts)
 router.get("/:id", ControllerArt.getArtDetail)
+
+router.use(authentication)
+
 router.post("/",upload.array("uploadedFile", 4), ControllerArt.addItem)
 
 module.exports = router
