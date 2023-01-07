@@ -7,28 +7,24 @@ const authorization = async (req, res, next) => {
 
         const art = await Art.findOne({ where: { id } })
 
-        if (!art) {
-            throw { name: "NOT FOUND" }
-        }
-
+        if (!art) throw { name: "NOT FOUND" }
+        
         // sementara AuthorId itu 1 semua, nanti pake req user
-        if (art.AuthorId !== 1) {
-            throw { name: 'UNAUTHORIZED' }
-        }
+        if (art.AuthorId !== 1) throw { name: 'UNAUTHORIZED' }
+        
+        next()
 
     } catch (error) {
         next(error)
     }
 }
 
-const checkArtStatus = async (req, res, next) => {
+const checkArtStatusInactive = async (req, res, next) => {
     try {
         const { id } = req.params
 
         const art = await Art.findOne({ where: { id } })
-        if (art.status == 'inactive') {
-            throw { name: "INACTIVE ART" }
-        }
+        if (art.status == 'Inactive') throw { name: "INACTIVE ART" }
 
         next()
 
@@ -37,4 +33,18 @@ const checkArtStatus = async (req, res, next) => {
     }
 }
 
-module.exports = { authorization, checkArtStatus }
+const checkArtStatusActive = async (req, res, next) => {
+    try {
+        const { id } = req.params
+
+        const art = await Art.findOne({ where: { id } })
+        if (art.status == 'Active') throw { name: "ACTIVE ART" }
+
+        next()
+
+    } catch (error) {
+        next(error)
+    }
+}
+
+module.exports = { authorization, checkArtStatusInactive, checkArtStatusActive }

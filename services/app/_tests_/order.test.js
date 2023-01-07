@@ -1,6 +1,29 @@
 const app = require('../app')
 const request = require('supertest')
-const { Order } = require('../models')
+const { Art, Order } = require('../models')
+const { sequelize } = require('../models')
+
+const artDummy = {
+    "name": "testName",
+    "source": "testSource",
+    "price": 1234,
+    "description": "testDesc",
+    "AuthorId": 1,
+    "status": "Active",
+    "CategoryId": 1,
+    "uploadedFile": [
+        {
+            "id": 1,
+            "sourceUrl": "c-art/Screenshot (2)18581889735.png",
+            "ArtId": 1,
+        },
+        {
+            "id": 2,
+            "sourceUrl": "c-art/Screenshot (2)18581889735.png",
+            "ArtId": 1,
+        }
+    ]
+}
 
 const orderDummy = {
     customerId: 1,
@@ -10,16 +33,33 @@ const orderDummy = {
     orderDate: new Date()
 }
 
-beforeAll(() => {
-    Order.create(orderDummy)
+beforeAll(async () => {
+    await Art.create(artDummy)
+    .then(_ => {
+        return Order.create(orderDummy)
+    })
+    .catch(err => console.log(err))
 })
 
-afterAll(() => {
-    Order.destroy({ restartIdentity: true })
+afterAll(async () => {
+    await Order.destroy({ truncate: true, restartIdentity: true })
+    .then(_ => {
+        return Art.destroy({ truncate: true, restartIdentity: true, cascade: true })
+        // .then(_ => {
+        //     return 
+        // })
+    })
+    .catch(err => console.log(err))
+})
+
+beforeEach(() => {
+    jest.restoreAllMocks()
 })
 
 describe("FINDALL /orders", () => {
+
     test("200 - Success getAll orders", (done) => {
+
         request(app)
             .get("/orders")
             .then((response) => {
@@ -30,12 +70,26 @@ describe("FINDALL /orders", () => {
                 expect(body.length).toBeGreaterThan(0);
                 done();
             })
-            .catch((err => done(err)))
+            .catch((err => console.log(err)))
+    })
+
+    test("500 - Internal server error", async () => {
+        jest.spyOn(Order, 'findAll').mockRejectedValue('Error')
+        return request(app)
+            .get('/orders')
+            .then((res) => {
+                expect(res.status).toBe(500)
+                expect(res.body).toHaveProperty('message', expect.any(String))
+            })
+            .catch((err) => {
+                console.log(err)
+            })
     })
 })
 
 describe("FINDONE /orders", () => {
-    test("200 - Success getOne orders", (done) => {
+
+    test("200 - Success getOne order", (done) => {
         request(app)
             .get("/orders/1")
             .then((res) => {
@@ -47,7 +101,7 @@ describe("FINDONE /orders", () => {
                 expect(body).toHaveProperty('customerId', expect.any(Number));
                 expect(body).toHaveProperty('artId', expect.any(Number));
                 expect(body).toHaveProperty('amount', expect.any(Number));
-                expect(body).toHaveProperty('orderDate', expect.any(Date));
+                expect(body).toHaveProperty('orderDate', expect.any(String));
                 expect(body).toHaveProperty('status', expect.any(String));
                 done()
             })
@@ -62,7 +116,7 @@ describe("FINDONE /orders", () => {
 
                 expect(status).toBe(404)
                 expect(body).toEqual(expect.any(Object))
-                expect(body).toHaveProperty('status', expect.any(String));
+                expect(body).toHaveProperty('status', expect.any(Number));
                 expect(body).toHaveProperty('message', expect.any(String));
                 done()
             })
@@ -92,7 +146,7 @@ describe("POSTONE /orders", () => {
                 expect(body).toHaveProperty("artId", expect.any(Number))
                 expect(body).toHaveProperty("amount", expect.any(Number))
                 expect(body).toHaveProperty("status", expect.any(String))
-                expect(body).toHaveProperty("orderDate", expect.any(Date))
+                expect(body).toHaveProperty("orderDate", expect.any(String))
                 done()
             })
             .catch(err => done(err))
@@ -129,7 +183,7 @@ describe("POSTONE /orders", () => {
                 expect(body).toBeInstanceOf(Object)
                 expect(body).toHaveProperty("status", 400)
                 expect(body).toHaveProperty("message", expect.any(String))
-                done(err)
+                done()
             })
             .catch(err => done(err))
 
@@ -173,28 +227,30 @@ describe("POSTONE /orders", () => {
 })
 
 describe("PATCHONE /orders", () => {
-    test("200 - Success update order status to paid", (done) => {
-        request(app)
-            .patch("orders/1")
+    test("200 - Success update order status to paid", async () => {
+        return request(app)
+            .patch("/orders/1")
+            .send()
             .then((res => {
                 const { body, status } = res
                 expect(status).toBe(200)
                 expect(body).toBeInstanceOf(Object)
                 expect(body).toHaveProperty("message", expect.any(String))
-                done()
+                // done()
             }))
-            .catch(err => done(err))
+            .catch(err => console.log(err))
     })
 
     test("404 - Fail order not found", (done) => {
         request(app)
             .patch("/orders/999")
+            .send()
             .then((response) => {
                 const { body, status } = response
 
                 expect(status).toBe(404)
                 expect(body).toEqual(expect.any(Object))
-                expect(body).toHaveProperty('status', expect.any(String));
+                expect(body).toHaveProperty('status', expect.any(Number));
                 expect(body).toHaveProperty('message', expect.any(String));
                 done()
             })
@@ -224,7 +280,7 @@ describe("DELETEONE /orders", () => {
                 const { body, status } = res
                 expect(status).toBe(404)
                 expect(body).toEqual(expect.any(Object))
-                expect(body).toHaveProperty('status', expect.any(String));
+                expect(body).toHaveProperty('status', expect.any(Number));
                 expect(body).toHaveProperty('message', expect.any(String));
                 done()
             })

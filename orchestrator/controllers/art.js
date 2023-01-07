@@ -33,40 +33,40 @@ class ControllerArt {
         }
     }
 
-    static async addItem(req, res, next) {
-        try {
+    // static async addItem(req, res, next) {
+    //     try {
 
-            let itemData = new FormData()
-            console.log(req.body);
-            req.files.forEach(el => {
-                itemData.append("uploadedFile", el.buffer, el.originalname)
+    //         let itemData = new FormData()
+    //         console.log(req.body);
+    //         req.files.forEach(el => {
+    //             itemData.append("uploadedFile", el.buffer, el.originalname)
 
-            })
+    //         })
 
-            itemData.append("name", req.body.name)
-            itemData.append("price", req.body.price)
-            itemData.append("description", req.body.description)
-            itemData.append("CategoryId", req.body.CategoryId)
-
-
-
-            const { data } = await axios({
-                url: appServer + "arts",
-                method: "post",
-                data: itemData.getBuffer(),
-                headers: {
+    //         itemData.append("name", req.body.name)
+    //         itemData.append("price", req.body.price)
+    //         itemData.append("description", req.body.description)
+    //         itemData.append("CategoryId", req.body.CategoryId)
 
 
-                    ...itemData.getHeaders()
-                }
-            })
 
-            res.status(201).json(data)
-        } catch (error) {
-            console.log(error);
-            res.status(500).end()
-        }
-    }
+    //         const { data } = await axios({
+    //             url: appServer + "arts",
+    //             method: "post",
+    //             data: itemData.getBuffer(),
+    //             headers: {
+
+
+    //                 ...itemData.getHeaders()
+    //             }
+    //         })
+
+    //         res.status(201).json(data)
+    //     } catch (error) {
+    //         console.log(error);
+    //         res.status(500).end()
+    //     }
+    // }
 }
 
 

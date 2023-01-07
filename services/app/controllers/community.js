@@ -24,6 +24,8 @@ class communityController {
                 },
                 where: { id }
             })
+
+            if (!community) throw { name: 'NOT FOUND' }
             res.status(200).json(community)
         } catch (error) {
             next(error)

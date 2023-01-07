@@ -5,12 +5,36 @@ class ControllerOrder {
     static async createOrder(req, res, next) {
         try {
             const { customerId, artId, amount } = req.body
+            if (!artId) throw { name: 'INVALID ORDER' }
+
             const artOrdered = await Art.findByPk(artId)
 
-            if (!customerId || !artId || amount <= 0 || !artOrdered) throw { name: 'INVALID ORDER' }
+            if (!customerId || amount <= 0 || !artOrdered) throw { name: 'INVALID ORDER' }
 
-            await Order.create({
+            const newOrder = await Order.create({
                 customerId, artId, amount, status: 'Unpaid', orderDate: new Date()
+            })
+
+            res.status(201).json(newOrder);
+
+        } catch (error) {
+            next(error)
+        }
+
+    }
+
+    static async generateMidtransToken(req, res, next) {
+        try {
+            const { id } = req.params
+            if (!id) throw { name: 'NOT FOUND' }
+
+            const order = await Order.findOne({
+                attributes: { exclude: ['createdAt', 'updatedAt'] },
+                include: {
+                    model: Art,
+                    attributes: { exclude: ['createdAt', 'updatedAt'] }
+                },
+                where: { id }
             })
 
             let snap = new midtransClient.Snap({
@@ -22,7 +46,7 @@ class ControllerOrder {
             let parameter = {
                 transaction_details: {
                     order_id: "YOUR-ORDERID-" + Math.floor(1000000 + Math.random() * 9000000),
-                    gross_amount: (artOrdered.price * amount)
+                    gross_amount: (order.Art.price * order.amount)
                 },
                 credit_card: {
                     "secure": true
@@ -39,13 +63,11 @@ class ControllerOrder {
             console.log(error);
             next(error)
         }
-
     }
 
     static async patchOrderStatus(req, res, next) {
         try {
             const { id } = req.params
-
             const orderPaid = await Order.findByPk(id)
             if (!orderPaid) throw { name: 'NOT FOUND' }
 
@@ -61,7 +83,13 @@ class ControllerOrder {
 
     static async getAllOrders(req, res, next) {
         try {
-            const orders = await Order.findAll()
+            const orders = await Order.findAll({
+                attributes: { exclude: ['createdAt', 'updatedAt'] },
+                include: {
+                    model: Art,
+                    attributes: { exclude: ['createdAt', 'updatedAt'] }
+                }
+            })
             res.status(200).json(orders)
 
         } catch (error) {
@@ -72,7 +100,14 @@ class ControllerOrder {
     static async getOneOrder(req, res, next) {
         try {
             const { id } = req.params
-            const orderFound = await Order.findByPk(id)
+            const orderFound = await Order.findOne({
+                attributes: { exclude: ['createdAt', 'updatedAt'] },
+                include: {
+                    model: Art,
+                    attributes: { exclude: ['createdAt', 'updatedAt'] }
+                },
+                where: { id }
+            })
             if (!orderFound) throw { name: "NOT FOUND" }
             res.status(200).json(orderFound)
 

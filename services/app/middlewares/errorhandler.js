@@ -26,9 +26,19 @@ const errorHandler = (err, req, res, next) => {
             message = "You can only delete active arts"
             break;
 
+        case "ACTIVE ART":
+            status = 400
+            message = "You can only restore inactive arts"
+            break;
+
         case "INVALID ORDER":
             status = 400
             message = "You may have placed a wrong order"
+            break;
+
+        case "INVALID INPUT":
+            status = 400
+            message = "You must insert the correct input"
             break;
 
         default:

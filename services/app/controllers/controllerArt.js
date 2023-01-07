@@ -5,7 +5,7 @@ class ControllerArt {
     const t = await sequelize.transaction();
     try {
       let { name, price, description, CategoryId } = req.body;
-      console.log(req.files);
+      // console.log(req.files);
       ////REQ.FILES RECIEVES AN ARRAY OF 4 OBJECTS. FIRST IS SOURCE FOR ART, THE REST IS FOR PREVIEWS
       let art = await Art.create({
         name,
@@ -31,7 +31,6 @@ class ControllerArt {
       res.status(201).json({ art });
 
     } catch (error) {
-      console.log(error);
       await t.rollback()
       next(error);
     }
@@ -79,19 +78,41 @@ class ControllerArt {
   static async deleteArt(req, res, next) {
     try {
       const { id } = req.params;
+      const artToDelete = Art.findByPk(id)
+      if (!artToDelete) throw { name: 'NOT FOUND' }
+
       // note: status default pas create: active. Kalo mau seeding jangan lupa tambahin di seeders
-      await Art.update({ status: "inactive" }, { where: { id } });
+      await Art.update({ status: "Inactive" }, { where: { id } });
+      res.status(200).json({
+        message: `Art with id ${id} has been deactivated`
+      })
     } catch (error) {
       next(error);
     }
   }
 
-  static async updateArt(req, res, next) {
-    const t = await sequelize.transaction();
+  static async restoreArtStatus(req, res, next) {
+    try {
+      const { id } = req.params;
+      const artToRestore = Art.findByPk(id)
+      if (!artToRestore) throw { name: 'NOT FOUND' }
 
+      await Art.update({ status: "Active" }, { where: { id } });
+      res.status(200).json({
+        message: `Art with id ${id} has been reactivated`
+      })
+    } catch (error) {
+
+    }
+  }
+
+  static async updateArt(req, res, next) {
     try {
       const { id } = req.params;
       const { price } = req.body;
+      const artToUpdate = Art.findByPk(id)
+      if (!artToUpdate) throw { name: 'NOT FOUND' }
+      if (!price || price <= 0) throw { name: 'INVALID INPUT' }
 
       const updatedArt = await Art.update(
         {
@@ -100,6 +121,7 @@ class ControllerArt {
         { where: { id } }
       )
       res.status(200).json({ updatedArt });
+
     } catch (error) {
       next(error);
     }
