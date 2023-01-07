@@ -1,13 +1,10 @@
-const { verifyAuthToken } = require("../helpers/");
-
 async function authentication(req, res, next) {
   try {
-    const { auth_token } = req.headers;
-    if (!auth_token) {
-      throw { name: "Unauthorized" };
+    const { access_token, id, email, username, preference } = req.headers;
+    if (!access_token) {
+      throw { name: "NO TOKEN" };
     }
-    const payload = verifyAuthToken(auth_token);
-    req.user = payload;
+    req.user = { id, email, username, preference };
     next();
   } catch (err) {
     next(err);

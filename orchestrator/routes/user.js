@@ -4,9 +4,13 @@ const authentication = require('../middlewares/authentication')
 
 router.post("/register", ControllerUser.register)
 router.post("/login", ControllerUser.login)
+
+router.patch("/edit/:id", ControllerUser.editProfile)
+
 router.use(authentication)
 
+router.get("/profile", ControllerUser.userProfile)
+
 router.delete("/delete/:id", ControllerUser.deleteAccount)
-router.patch("/edit/:id", ControllerUser.editProfile)
 
 module.exports = router

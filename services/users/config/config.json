@@ -1,14 +1,14 @@
 {
   "development": {
     "username": "postgres",
-    "password": "",
+    "password": "postgres",
     "database": "c-art-development",
     "host": "localhost",
     "dialect": "postgres"
   },
   "test": {
     "username": "postgres",
-    "password": "",
+    "password": "postgres",
     "database": "c-art-test",
     "host": "localhost",
     "dialect": "postgres",

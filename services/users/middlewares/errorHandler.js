@@ -1,8 +1,6 @@
 function errorHandler(err, req, res, next) {
-  console.log(err)
   let status = 500;
   let message = "Internal Server Error";
-  console.log(err);
 
   if (
     err.name === "SequelizeValidationError" ||
@@ -33,7 +31,6 @@ function errorHandler(err, req, res, next) {
     message = "Username cannot be empty";
   }
 
-  console.log(err);
   res.status(status).json({ status, message });
 }
 

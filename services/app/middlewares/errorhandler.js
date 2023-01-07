@@ -30,6 +30,11 @@ const errorHandler = (err, req, res, next) => {
             message = "You may have placed a wrong order"
             break;
 
+        case "NO TOKEN":
+            status = 401
+            message = "Please login first"
+            break;
+            
         default:
             break;
     }
