@@ -1,15 +1,16 @@
 const axios = require("axios");
 const appServer = process.env.APP_URL;
 const FormData = require("form-data");
+const { access_token, user } = req.user;
 
 class ControllerArt {
   static async getArts(req, res, next) {
     try {
-      const {filter, search} = req.query
+      const { filter, search } = req.query
       const { data } = await axios({
         url: appServer + "arts",
         method: "get",
-        params: {filter, search}
+        params: { filter, search }
       });
 
       res.status(200).json(data);
@@ -63,6 +64,49 @@ class ControllerArt {
     } catch (error) {
       console.log(error);
       res.status(500).end();
+    }
+  }
+
+  static async patchArtPrice(req, res, next) {
+    try {
+      const { id } = req.params
+      const { data } = await axios({
+        method: 'patch',
+        url: `${appServer}arts/${id}`,
+        headers: { access_token, ...user }
+      })
+      res.json(data)
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  static async deleteArt(req, res, next) {
+    try {
+      const { id } = req.params
+      const { data } = await axios({
+        method: 'delete',
+        url: `${appServer}arts/${id}`,
+        headers: { access_token, ...user }
+      })
+      res.json(data)
+
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  static async restoreArt(req, res, next) {
+    try {
+      const { id } = req.params
+      const { data } = await axios({
+        method: 'post',
+        url: `${appServer}arts/${id}`,
+        headers: { access_token, ...user }
+      })
+      res.json(data)
+    } catch (error) {
+      next(error)
     }
   }
 }

@@ -5,7 +5,7 @@ const multer = require("multer")
 const authentication = require('../middlewares/authentication')
 
 const upload = multer({
-    storage:multer.memoryStorage()
+    storage: multer.memoryStorage()
 })
 
 router.get("/", ControllerArt.getArts)
@@ -13,6 +13,9 @@ router.get("/:id", ControllerArt.getArtDetail)
 
 router.use(authentication)
 
-router.post("/",upload.array("uploadedFile", 4), ControllerArt.addItem)
+router.post("/", upload.array("uploadedFile", 4), ControllerArt.addItem)
+router.patch('/:id', ControllerArt.patchArtPrice)
+router.delete('/:id', ControllerArt.deleteArt)
+router.post('/:id', ControllerArt.restoreArt)
 
 module.exports = router
