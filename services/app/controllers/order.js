@@ -63,7 +63,6 @@ class ControllerOrder {
             res.status(200).json(midtransToken);
 
         } catch (error) {
-            console.log(error);
             next(error)
         }
     }
@@ -127,7 +126,6 @@ class ControllerOrder {
             await Order.destroy({ where: { id, customerId } })
             res.status(200).json({ message: `Order with id ${id} has been cancelled` })
         } catch (error) {
-            console.log(error.name, '<<<<<<<<<<<<');
             next(error)
         }
     }

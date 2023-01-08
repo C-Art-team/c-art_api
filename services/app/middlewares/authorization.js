@@ -26,32 +26,6 @@ const authorizationPrice = async (req, res, next) => {
     }
 }
 
-const checkArtStatusInactive = async (req, res, next) => {
-    try {
-        const { id } = req.params
-
-        const art = await Art.findOne({ where: { id } })
-        if (art.status == 'Inactive') throw { name: "INACTIVE ART" }
-
-        next()
-
-    } catch (error) {
-        next(error)
-    }
-}
-
-const checkArtStatusActive = async (req, res, next) => {
-    try {
-        const { id } = req.params
-
-        const art = await Art.findOne({ where: { id } })
-        if (art.status == 'Active') throw { name: "ACTIVE ART" }
-        next()
-
-    } catch (error) {
-        next(error)
-    }
-}
 const authorizationOrder = async (req, res, next) => {
     try {
         const { id: orderId } = req.params
@@ -65,4 +39,4 @@ const authorizationOrder = async (req, res, next) => {
     }
 }
 
-module.exports = { authorization, checkArtStatusInactive, checkArtStatusActive, authorizationOrder, authorizationPrice }
+module.exports = { authorization, authorizationOrder, authorizationPrice }

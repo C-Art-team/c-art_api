@@ -3,7 +3,7 @@
 const errorHandler = (err, req, res, next) => {
     let status = 500
     let message = "Internal Server Error"
-
+    console.log(err);
     switch (err.name) {
         case "NOT FOUND":
             status = 404
@@ -20,16 +20,6 @@ const errorHandler = (err, req, res, next) => {
             message = "You can only update/delete your own art!"
             break;
 
-        case "INACTIVE ART":
-            status = 400
-            message = "You can only delete active arts"
-            break;
-
-        case "ACTIVE ART":
-            status = 400
-            message = "You can only restore inactive arts"
-            break;
-
         case "INVALID ORDER":
             status = 400
             message = "You may have placed a wrong order"
@@ -44,7 +34,12 @@ const errorHandler = (err, req, res, next) => {
             status = 401
             message = "Please login first"
             break;
-            
+
+        case "UNAUTHORIZED ORDER COMMAND":
+            status = 401
+            message = 'You can only pay/cancel your own order!'
+            break;
+
         default:
             break;
     }
