@@ -87,7 +87,6 @@ class ControllerArt {
         ],
         attributes: { exclude: ["createdAt", "updatedAt"] },
       });
-
       if (!art) {
         throw { name: "NOT FOUND" };
       }

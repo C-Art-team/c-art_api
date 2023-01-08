@@ -71,10 +71,8 @@ class ControllerOrder {
     static async patchOrderStatus(req, res, next) {
         try {
             const { id } = req.params
-            const orderPaid = await Order.findByPk(id)
-            if (!orderPaid) throw { name: 'NOT FOUND' }
 
-            await orderPaid.update({ status: 'Paid' }, { where: { id } })
+            await Order.update({ status: 'Paid' }, { where: { id } })
             res.status(200).json({
                 message: `Order with id ${id} has been paid`
             })
@@ -97,7 +95,6 @@ class ControllerOrder {
             })
             res.status(200).json(orders)
         } catch (error) {
-            console.log(error);
             next(error)
         }
     }
@@ -126,12 +123,11 @@ class ControllerOrder {
         try {
             const { id } = req.params
             const customerId = req.user.id
-            const orderCancelled = await Order.findByPk(id)
-            if (!orderCancelled) throw { name: "NOT FOUND" }
 
-            await orderCancelled.destroy({ where: { id, customerId } })
-            res.status(200).json({ message: `Order with id ${orderCancelled.id} has been cancelled` })
+            await Order.destroy({ where: { id, customerId } })
+            res.status(200).json({ message: `Order with id ${id} has been cancelled` })
         } catch (error) {
+            console.log(error.name, '<<<<<<<<<<<<');
             next(error)
         }
     }
