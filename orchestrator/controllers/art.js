@@ -1,7 +1,6 @@
 const axios = require("axios");
 const appServer = process.env.APP_URL;
 const FormData = require("form-data");
-const { access_token, user } = req.user;
 
 class ControllerArt {
   static async getArts(req, res, next) {
@@ -69,11 +68,14 @@ class ControllerArt {
 
   static async patchArtPrice(req, res, next) {
     try {
+      const { access_token, user } = req.user;
+      const { price } = req.body
       const { id } = req.params
       const { data } = await axios({
         method: 'patch',
         url: `${appServer}arts/${id}`,
-        headers: { access_token, ...user }
+        headers: { access_token, ...user },
+        data: { price }
       })
       res.json(data)
     } catch (error) {
@@ -83,6 +85,8 @@ class ControllerArt {
 
   static async deleteArt(req, res, next) {
     try {
+      const { access_token, user } = req.user;
+
       const { id } = req.params
       const { data } = await axios({
         method: 'delete',
@@ -98,6 +102,8 @@ class ControllerArt {
 
   static async restoreArt(req, res, next) {
     try {
+      const { access_token, user } = req.user;
+
       const { id } = req.params
       const { data } = await axios({
         method: 'post',

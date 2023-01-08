@@ -96,8 +96,8 @@ class ControllerOrder {
                 where: { customerId }
             })
             res.status(200).json(orders)
-
         } catch (error) {
+            console.log(error);
             next(error)
         }
     }

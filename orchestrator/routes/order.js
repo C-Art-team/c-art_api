@@ -1,7 +1,8 @@
 const router = require('express').Router()
 const ControllerOrder = require('../controllers/order')
+const authentication = require('../middlewares/authentication')
 
-// hanya bisa dijalankan abis login, jadi udh punya access token
+router.use(authentication)
 router.get('/', ControllerOrder.getAllOrders)
 router.get('/:id', ControllerOrder.getOneOrder)
 router.get('/pay/:id', ControllerOrder.generateMidtransToken)

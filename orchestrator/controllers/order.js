@@ -1,12 +1,13 @@
 const axios = require('axios')
 const APP_URL = process.env.APP_URL
 const redis = require('../config/ioredis')
-const { access_token, user } = req.user;
 
 class orderController {
     static async getAllOrders(req, res, next) {
         try {
+            const { access_token, user } = req.user;
             const ordersCache = await redis.get("orders")
+
             if (ordersCache) res.json(JSON.parse(ordersCache))
             else {
                 const { data } = await axios({
@@ -15,15 +16,19 @@ class orderController {
                 })
                 await redis.set("orders", JSON.stringify(data))
                 res.json(data)
+                // console.log(data);
             }
 
         } catch (error) {
+            console.log(error);
             next(error)
         }
     }
 
     static async getOneOrder(req, res, next) {
         try {
+            const { access_token, user } = req.user;
+
             const { id } = req.params
             const orderCache = await redis.get(`orders:${id}`)
 
@@ -44,6 +49,8 @@ class orderController {
 
     static async generateMidtransToken(req, res, next) {
         try {
+            const { access_token, user } = req.user;
+
             const { id } = req.params
             const { data } = await axios({
                 method: "get",
@@ -58,6 +65,8 @@ class orderController {
 
     static async createOrder(req, res, next) {
         try {
+            const { access_token, user } = req.user;
+
             const { artId, amount } = req.body
             const { data } = await axios({
                 method: "post",
@@ -74,10 +83,12 @@ class orderController {
 
     static async patchOrderStatus(req, res, next) {
         try {
+            const { access_token, user } = req.user;
+
             const { id } = req.params
             const { data } = await axios({
                 method: 'patch',
-                urL: `${APP_URL}orders/${id}`,
+                url: `${APP_URL}orders/${id}`,
                 data: {},
                 headers: { access_token, ...user }
             })
@@ -89,6 +100,8 @@ class orderController {
 
     static async deleteOrder(req, res, next) {
         try {
+            const { access_token, user } = req.user;
+
             const { id } = req.params
             const { data } = await axios({
                 method: 'delete',

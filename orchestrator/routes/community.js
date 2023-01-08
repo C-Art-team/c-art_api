@@ -1,4 +1,4 @@
-const router = require('express').Router
+const router = require('express').Router()
 const communityController = require('../controllers/community')
 
 router.get('/', communityController.getAllCommunities)
