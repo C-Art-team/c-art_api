@@ -40,7 +40,7 @@ class ControllerArt {
 
   static async getArts(req, res, next) {
     try {
-      const {filter, search} = req.query
+      const { filter, search } = req.query
       let option = {
         include: [{
           model: Preview,
@@ -49,13 +49,13 @@ class ControllerArt {
         attributes: { exclude: ['createdAt', 'updatedAt'] }
       }
       let where = {}
-      if(filter){
+      if (filter) {
         where.CategoryId = filter
       }
-      if(search){
-        where.name = {[Op.iLike]: `%${search}%`}
+      if (search) {
+        where.name = { [Op.iLike]: `%${search}%` }
       }
-      if(where){
+      if (where) {
         option.where = where
       }
       // console.log(option)
@@ -76,14 +76,12 @@ class ControllerArt {
         include: [{
           model: Preview,
           attributes: { exclude: ['createdAt', 'updatedAt'] }
-        }],
-        include: [{
+        }, {
           model: Category,
           attributes: { exclude: ['createdAt', 'updatedAt'] }
         }],
         attributes: { exclude: ['createdAt', 'updatedAt'] }
       });
-      console.log(art);
       if (!art) {
         throw { name: "NOT FOUND" };
       }

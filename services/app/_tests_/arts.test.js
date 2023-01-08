@@ -98,6 +98,7 @@ describe("FINDALL /arts", () => {
                 done(err)
             }))
     })
+    
 })
 
 describe("FINDONE /arts", () => {
@@ -106,7 +107,6 @@ describe("FINDONE /arts", () => {
             .get("/arts/1")
             .then((response) => {
                 const { body, status } = response
-                console.log(body, '<<art');
                 expect(status).toBe(200)
                 expect(body).toEqual(expect.any(Object))
                 expect(body).toHaveProperty('id', expect.any(Number));

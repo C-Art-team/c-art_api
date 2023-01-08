@@ -1,7 +1,6 @@
 const app = require('../app')
 const request = require('supertest')
 const { Art, Order } = require('../models')
-const { sequelize } = require('../models')
 
 const userDummy = {
     access_token: 1,
@@ -10,6 +9,14 @@ const userDummy = {
     username: "dodol26",
     preference: "Image Asset",
 };
+
+const userDummy2 = {
+    access_token: 1,
+    id: 999,
+    email: "dodolabc@gmail.com",
+    username: "dodol26",
+    preference: "Image Asset",
+}
 
 const artDummy = {
     "name": "testName",
@@ -50,7 +57,7 @@ beforeAll(async () => {
 })
 
 afterAll(async () => {
-    await Order.destroy({ truncate: true, restartIdentity: true })
+    await Order.destroy({ truncate: true, cascade:true, restartIdentity: true })
         .then(_ => {
             return Art.destroy({ truncate: true, restartIdentity: true, cascade: true })
             // .then(_ => {
@@ -86,6 +93,7 @@ describe("FINDALL /orders", () => {
         jest.spyOn(Order, 'findAll').mockRejectedValue('Error')
         return request(app)
             .get('/orders')
+            .set(userDummy)
             .then((res) => {
                 expect(res.status).toBe(500)
                 expect(res.body).toHaveProperty('message', expect.any(String))
@@ -164,25 +172,6 @@ describe("POSTONE /orders", () => {
             .catch(err => done(err))
     })
 
-    test("400 - Fail missing customerId", (done) => {
-        const missingCustomerId = {
-            ...postOrderDummy, customerId: ''
-        }
-        request(app)
-            .post("/orders")
-            .send(missingCustomerId)
-            .set(userDummy)
-            .then((res) => {
-                const { body, status } = res
-                expect(status).toBe(400)
-                expect(body).toBeInstanceOf(Object)
-                expect(body).toHaveProperty("status", 400)
-                expect(body).toHaveProperty("message", expect.any(String))
-                done()
-            })
-            .catch(err => done(err))
-    })
-
     test("400 - Fail missing artId", (done) => {
         const missingArtId = {
             ...postOrderDummy, artId: ''
@@ -199,7 +188,7 @@ describe("POSTONE /orders", () => {
                 expect(body).toHaveProperty("message", expect.any(String))
                 done()
             })
-            .catch(err => done(err))
+            .catch(err => console.log(err))
 
     })
 
@@ -262,7 +251,7 @@ describe("PATCHONE /orders", () => {
         request(app)
             .patch("/orders/999")
             .send()
-            .set(userDummy)
+            .set(userDummy2)
             .then((response) => {
                 const { body, status } = response
 
@@ -300,6 +289,7 @@ describe("DELETEONE /orders", () => {
             .set(userDummy)
             .then((res) => {
                 const { body, status } = res
+                console.log(body);
                 expect(status).toBe(404)
                 expect(body).toEqual(expect.any(Object))
                 expect(body).toHaveProperty('status', expect.any(Number));

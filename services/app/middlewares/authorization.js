@@ -57,6 +57,7 @@ const authorizationOrder = async (req, res, next) => {
         const { id: orderId } = req.params
         const { id: userId } = req.user
         const order = await Order.findByPk(orderId)
+        if (!order) throw { name: "NOT FOUND" }
         if (order.customerId != userId) throw { name: 'UNAUTHORIZED ORDER COMMAND' }
         next()
     } catch (error) {
