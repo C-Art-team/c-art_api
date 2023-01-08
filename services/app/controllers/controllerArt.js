@@ -1,11 +1,11 @@
 const { Art, Preview, sequelize, Category } = require("../models");
-const { Op } = require('sequelize')
+const { Op } = require("sequelize");
 
 class ControllerArt {
   static async createArt(req, res, next) {
     const t = await sequelize.transaction();
     try {
-      const AuthorId = req.user.id
+      const AuthorId = req.user.id;
       let { name, price, description, CategoryId } = req.body;
       // console.log(req.files);
       ////REQ.FILES RECIEVES AN ARRAY OF 4 OBJECTS. FIRST IS SOURCE FOR ART, THE REST IS FOR PREVIEWS
@@ -31,34 +31,36 @@ class ControllerArt {
       await t.commit();
       art.dataValues.Previews = newPreviews;
       res.status(201).json({ art });
-
     } catch (error) {
-      await t.rollback()
+      console.log(error)
+      await t.rollback();
       next(error);
     }
   }
 
   static async getArts(req, res, next) {
     try {
-      const { filter, search } = req.query
+      const { filter, search } = req.query;
       let option = {
-        include: [{
-          model: Preview,
-          attributes: { exclude: ['createdAt', 'updatedAt'] }
-        }],
-        attributes: { exclude: ['createdAt', 'updatedAt'] }
-      }
-      let where = {}
+        include: [
+          {
+            model: Preview,
+            attributes: { exclude: ["createdAt", "updatedAt"] },
+          },
+        ],
+        attributes: { exclude: ["createdAt", "updatedAt"] },
+      };
+      let where = {};
       if (filter) {
-        where.CategoryId = filter
+        where.CategoryId = filter;
       }
       if (search) {
-        where.name = { [Op.iLike]: `%${search}%` }
+        where.name = { [Op.iLike]: `%${search}%` };
       }
       if (where) {
-        option.where = where
+        option.where = where;
       }
-      // console.log(option)
+      console.log(option);
       let arts = await Art.findAll(option);
       // console.log(arts);
       res.status(200).json(arts);
@@ -73,14 +75,17 @@ class ControllerArt {
       let { id } = req.params;
       let art = await Art.findOne({
         where: { id },
-        include: [{
-          model: Preview,
-          attributes: { exclude: ['createdAt', 'updatedAt'] }
-        }, {
-          model: Category,
-          attributes: { exclude: ['createdAt', 'updatedAt'] }
-        }],
-        attributes: { exclude: ['createdAt', 'updatedAt'] }
+        include: [
+          {
+            model: Preview,
+            attributes: { exclude: ["createdAt", "updatedAt"] },
+          },
+          {
+            model: Category,
+            attributes: { exclude: ["createdAt", "updatedAt"] },
+          },
+        ],
+        attributes: { exclude: ["createdAt", "updatedAt"] },
       });
       if (!art) {
         throw { name: "NOT FOUND" };
@@ -95,14 +100,14 @@ class ControllerArt {
   static async deleteArt(req, res, next) {
     try {
       const { id } = req.params;
-      const artToDelete = Art.findByPk(id)
-      if (!artToDelete) throw { name: 'NOT FOUND' }
+      const artToDelete = Art.findByPk(id);
+      if (!artToDelete) throw { name: "NOT FOUND" };
 
       // note: status default pas create: active. Kalo mau seeding jangan lupa tambahin di seeders
       await Art.update({ status: "Inactive" }, { where: { id } });
       res.status(200).json({
-        message: `Art with id ${id} has been deactivated`
-      })
+        message: `Art with id ${id} has been deactivated`,
+      });
     } catch (error) {
       next(error);
     }
@@ -111,31 +116,31 @@ class ControllerArt {
   static async restoreArtStatus(req, res, next) {
     try {
       const { id } = req.params;
-      const artToRestore = Art.findByPk(id)
-      if (!artToRestore) throw { name: 'NOT FOUND' }
+      const artToRestore = Art.findByPk(id);
+      if (!artToRestore) throw { name: "NOT FOUND" };
 
       await Art.update({ status: "Active" }, { where: { id } });
       res.status(200).json({
-        message: `Art with id ${id} has been reactivated`
-      })
-    } catch (error) {
-
-    }
+        message: `Art with id ${id} has been reactivated`,
+      });
+    } catch (error) {}
   }
 
   static async updateArt(req, res, next) {
     try {
       const { id } = req.params;
       const { price } = req.body;
+      const artToUpdate = Art.findByPk(id);
+      if (!artToUpdate) throw { name: "NOT FOUND" };
+      if (!price || price <= 0) throw { name: "INVALID INPUT" };
 
       const updatedArt = await Art.update(
         {
-          price
+          price,
         },
         { where: { id } }
-      )
+      );
       res.status(200).json({ updatedArt });
-
     } catch (error) {
       next(error);
     }
