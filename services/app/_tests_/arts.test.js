@@ -2,6 +2,14 @@ const app = require('../app')
 const request = require('supertest')
 const { Art, Preview } = require('../models')
 
+const userDummy = {
+    access_token: 1,
+    id: 1,
+    email: "dodol@gmail.com",
+    username: "dodol26",
+    preference: "Image Asset",
+};
+
 const artDummy = {
     "name": "testNamee",
     "source": "testSource",
@@ -98,6 +106,7 @@ describe("FINDONE /arts", () => {
             .get("/arts/1")
             .then((response) => {
                 const { body, status } = response
+                console.log(body, '<<art');
                 expect(status).toBe(200)
                 expect(body).toEqual(expect.any(Object))
                 expect(body).toHaveProperty('id', expect.any(Number));
@@ -109,7 +118,6 @@ describe("FINDONE /arts", () => {
                 expect(body).toHaveProperty('status', expect.any(String));
                 expect(body).toHaveProperty('CategoryId', expect.any(Number));
                 expect(body).toHaveProperty('Previews', expect.any(Array));
-
                 done()
             })
             .catch((err) => {
@@ -140,6 +148,7 @@ describe("PATCH /arts/:id", () => {
     test("200 - Success update art price", (done) => {
         request(app)
             .patch("/arts/1")
+            .set(userDummy)
             .send({
                 price: 123
             })
@@ -158,6 +167,7 @@ describe("PATCH /arts/:id", () => {
     test("404 - Fail art not found", (done) => {
         request(app)
             .patch("/arts/999")
+            .set(userDummy)
             .send({
                 price: 123
             })
@@ -177,6 +187,7 @@ describe("PATCH /arts/:id", () => {
     test("400 - Fail missing price", (done) => {
         request(app)
             .patch('/arts/1')
+            .set(userDummy)
             .send({ price: null })
             .then((response) => {
                 const { body, status } = response
@@ -194,6 +205,7 @@ describe("PATCH /arts/:id", () => {
         request(app)
             .patch('/arts/1')
             .send({ price: 0 })
+            .set(userDummy)
             .then((res) => {
                 const { body, status } = res
 
@@ -213,6 +225,7 @@ describe("POST /arts/:id", () => {
     test("404 - Fail art not found", (done) => {
         request(app)
             .delete("/arts/999")
+            .set(userDummy)
             .then((response) => {
                 const { body, status } = response
 
@@ -234,6 +247,7 @@ describe("DELETEONE /arts/:id", () => {
     test("200 - Success update art status to inactive", (done) => {
         request(app)
             .delete('/arts/1')
+            .set(userDummy)
             .then((res) => {
                 const { body, status } = res
 
@@ -248,6 +262,7 @@ describe("DELETEONE /arts/:id", () => {
     test("404 - Fail art not found", (done) => {
         request(app)
             .delete("/arts/999")
+            .set(userDummy)
             .then((response) => {
                 const { body, status } = response
 
@@ -262,5 +277,4 @@ describe("DELETEONE /arts/:id", () => {
     })
 
     // fail karena dia inactive
-    // fail karena authorId != req.user.id
 })

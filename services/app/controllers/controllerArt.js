@@ -58,7 +58,7 @@ class ControllerArt {
       if(where){
         option.where = where
       }
-      console.log(option)
+      // console.log(option)
       let arts = await Art.findAll(option);
       // console.log(arts);
       res.status(200).json(arts);
@@ -83,7 +83,7 @@ class ControllerArt {
         }],
         attributes: { exclude: ['createdAt', 'updatedAt'] }
       });
-
+      console.log(art);
       if (!art) {
         throw { name: "NOT FOUND" };
       }

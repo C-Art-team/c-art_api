@@ -3,6 +3,14 @@ const request = require('supertest')
 const { Art, Order } = require('../models')
 const { sequelize } = require('../models')
 
+const userDummy = {
+    access_token: 1,
+    id: 1,
+    email: "dodol@gmail.com",
+    username: "dodol26",
+    preference: "Image Asset",
+};
+
 const artDummy = {
     "name": "testName",
     "source": "testSource",
@@ -35,21 +43,21 @@ const orderDummy = {
 
 beforeAll(async () => {
     await Art.create(artDummy)
-    .then(_ => {
-        return Order.create(orderDummy)
-    })
-    .catch(err => console.log(err))
+        .then(_ => {
+            return Order.create(orderDummy)
+        })
+        .catch(err => console.log(err))
 })
 
 afterAll(async () => {
     await Order.destroy({ truncate: true, restartIdentity: true })
-    .then(_ => {
-        return Art.destroy({ truncate: true, restartIdentity: true, cascade: true })
-        // .then(_ => {
-        //     return 
-        // })
-    })
-    .catch(err => console.log(err))
+        .then(_ => {
+            return Art.destroy({ truncate: true, restartIdentity: true, cascade: true })
+            // .then(_ => {
+            //     return 
+            // })
+        })
+        .catch(err => console.log(err))
 })
 
 beforeEach(() => {
@@ -62,6 +70,7 @@ describe("FINDALL /orders", () => {
 
         request(app)
             .get("/orders")
+            .set(userDummy)
             .then((response) => {
                 const { body, status } = response
 
@@ -92,6 +101,7 @@ describe("FINDONE /orders", () => {
     test("200 - Success getOne order", (done) => {
         request(app)
             .get("/orders/1")
+            .set(userDummy)
             .then((res) => {
                 const { body, status } = res
 
@@ -111,6 +121,7 @@ describe("FINDONE /orders", () => {
     test("404 - Fail order not found", (done) => {
         request(app)
             .get("/orders/999")
+            .set(userDummy)
             .then((response) => {
                 const { body, status } = response
 
@@ -137,6 +148,7 @@ describe("POSTONE /orders", () => {
         request(app)
             .post("/orders")
             .send(postOrderDummy)
+            .set(userDummy)
             .then((res) => {
                 const { body, status } = res
 
@@ -159,6 +171,7 @@ describe("POSTONE /orders", () => {
         request(app)
             .post("/orders")
             .send(missingCustomerId)
+            .set(userDummy)
             .then((res) => {
                 const { body, status } = res
                 expect(status).toBe(400)
@@ -177,6 +190,7 @@ describe("POSTONE /orders", () => {
         request(app)
             .post("/orders")
             .send(missingArtId)
+            .set(userDummy)
             .then((res) => {
                 const { body, status } = res
                 expect(status).toBe(400)
@@ -196,6 +210,7 @@ describe("POSTONE /orders", () => {
         request(app)
             .post("/orders")
             .send(missingAmount)
+            .set(userDummy)
             .then((res) => {
                 const { body, status } = res
                 expect(status).toBe(400)
@@ -214,6 +229,7 @@ describe("POSTONE /orders", () => {
         request(app)
             .post("/orders")
             .send(noArt)
+            .set(userDummy)
             .then((res) => {
                 const { body, status } = res
                 expect(status).toBe(400)
@@ -231,6 +247,7 @@ describe("PATCHONE /orders", () => {
         return request(app)
             .patch("/orders/1")
             .send()
+            .set(userDummy)
             .then((res => {
                 const { body, status } = res
                 expect(status).toBe(200)
@@ -245,6 +262,7 @@ describe("PATCHONE /orders", () => {
         request(app)
             .patch("/orders/999")
             .send()
+            .set(userDummy)
             .then((response) => {
                 const { body, status } = response
 
@@ -257,12 +275,15 @@ describe("PATCHONE /orders", () => {
             .catch((err) => done(err))
     })
 
+    // test unauthorized
+
 })
 
 describe("DELETEONE /orders", () => {
     test("200 - Success delete order", (done) => {
         request(app)
             .delete("/orders/1")
+            .set(userDummy)
             .then((res) => {
                 const { body, status } = res
                 expect(status).toBe(200)
@@ -276,6 +297,7 @@ describe("DELETEONE /orders", () => {
     test("404 - Fail order not found", (done) => {
         request(app)
             .delete("/orders/999")
+            .set(userDummy)
             .then((res) => {
                 const { body, status } = res
                 expect(status).toBe(404)
