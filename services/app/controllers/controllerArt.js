@@ -60,13 +60,12 @@ class ControllerArt {
       if (where) {
         option.where = where;
       }
-      console.log(option);
+      // console.log(option);
       let arts = await Art.findAll(option);
       // console.log(arts);
       res.status(200).json(arts);
     } catch (error) {
-      console.log(error);
-      // next(error)
+      next(error)
     }
   }
 

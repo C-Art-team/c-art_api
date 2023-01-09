@@ -28,6 +28,7 @@ describe("FINDALL /categories", () => {
             .get('/categories')
             .then((res) => {
                 expect(res.status).toBe(500)
+                expect(res.body).toHaveProperty('status', expect.any(Number))
                 expect(res.body).toHaveProperty('message', expect.any(String))
             })
             .catch((err) => {
