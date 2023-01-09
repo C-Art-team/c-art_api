@@ -207,6 +207,80 @@ describe("POST /login", () => {
   });
 });
 
+describe("POST /facebookLogin", () => {
+  const data = {
+    email: "dodol@gmail.com",
+    username: "Tonni",
+  };
+  test("200 - OK, email already registered", async () => {
+    const response = await request(app).post("/facebookLogin").set(data);
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty("access_token", expect.any(String));
+    expect(response.body).toHaveProperty("id", 1);
+    expect(response.body).toHaveProperty("email", "dodol@gmail.com");
+    expect(response.body).toHaveProperty("username", "dodol");
+    expect(response.body).toHaveProperty("preference");
+  });
+  test("200 - OK, email is not registered yet", async () => {
+    const newUser = {
+      email: "dodol26@gmail.com",
+      username: "Tonni",
+    };
+    const response = await request(app).post("/facebookLogin").set(newUser);
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty("access_token", expect.any(String));
+    expect(response.body).toHaveProperty("id", 4);
+    expect(response.body).toHaveProperty("email", "dodol26@gmail.com");
+    expect(response.body).toHaveProperty("username", "Tonni");
+    expect(response.body).toHaveProperty("preference");
+  });
+
+  test("500 - Internal Server Error", async () => {
+    jest.spyOn(User, "findOrCreate").mockRejectedValue("Error");
+    const response = await request(app).post("/facebookLogin").set(data);
+    expect(response.status).toBe(500);
+    expect(response.body).toHaveProperty("status", 500);
+    expect(response.body).toHaveProperty("message", "Internal Server Error");
+  });
+});
+
+describe("POST /googleLogin", () => {
+  const google_token =
+    "eyJhbGciOiJSUzI1NiIsImtpZCI6ImEyOWFiYzE5YmUyN2ZiNDE1MWFhNDMxZTk0ZmEzNjgwYWU0NThkYTUiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJuYmYiOjE2NzMyNTQ0MTQsImF1ZCI6IjM3MzE5Nzg4MDQ2LXVsajIxcWY5aDQ3a3J1NmczNThtbnR0ODVoNjFqbDk1LmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwic3ViIjoiMTEwMTEyNDQwNjI5MzEwODA0NTg0IiwiZW1haWwiOiJ0b25uaS5saXVzMjZAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImF6cCI6IjM3MzE5Nzg4MDQ2LXVsajIxcWY5aDQ3a3J1NmczNThtbnR0ODVoNjFqbDk1LmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwibmFtZSI6IlRvbm5pIExpdXMiLCJwaWN0dXJlIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUVkRlRwNmFJbXN2VXpGX3c3QjVuN1dBVk5WWThvVnQtcl9uYTFkUDFjQT1zOTYtYyIsImdpdmVuX25hbWUiOiJUb25uaSIsImZhbWlseV9uYW1lIjoiTGl1cyIsImlhdCI6MTY3MzI1NDcxNCwiZXhwIjoxNjczMjU4MzE0LCJqdGkiOiJmZjIxMWVmNmUzMTM4NmQzYTkwYzYxZWIzZDA3OTgzMGFiNjIwZTkwIn0.oJvk8VRwyBReSnO9j-61URvEiwDNb61lKUNTUMSwY5mmVZJycGx7H-XGPBl35ljaE0fS3PV9o6rObhWtKAlHLHZqa-rFMP4Qj3fo4q2yjN9vSQvy0snemvep_kyfIFB2pzQg1WgQvoKcc8jUzLYnZZIbbAlWVSB2WpwxN-xa-EVk3efM8PwheLJw0ZDvEawudmJGekMWDIn79zMB9-r3IDd8F3GuN_1k7W1B_KXCcp9nluFx6UiIjVhHHHHHrcgKqVq1y0pNg_0Dg8OJbyiyeAobnwVFBWGor8L-osjwPkGmYfkAlRkjJ3VtUXOmUPEOxo3jl5FA0ewQ_3VzcBZJIQ";
+  test("200 - OK, email is not registered yet", async () => {
+    const response = await request(app)
+      .post("/googleLogin")
+      .set({ google_token });
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty("access_token", expect.any(String));
+    expect(response.body).toHaveProperty("id", 5);
+    expect(response.body).toHaveProperty("email", "tonni.lius26@gmail.com");
+    expect(response.body).toHaveProperty("username", "Tonni Lius");
+    expect(response.body).toHaveProperty("preference");
+  });
+  test("200 - OK, email already registered", async () => {
+    const response = await request(app)
+      .post("/googleLogin")
+      .set({ google_token });
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty("access_token", expect.any(String));
+    expect(response.body).toHaveProperty("id", 5);
+    expect(response.body).toHaveProperty("email", "tonni.lius26@gmail.com");
+    expect(response.body).toHaveProperty("username", "Tonni Lius");
+    expect(response.body).toHaveProperty("preference");
+  });
+
+  test("500 - Internal Server Error", async () => {
+    jest.spyOn(User, "findOrCreate").mockRejectedValue("Error");
+    const response = await request(app)
+      .post("/googleLogin")
+      .set({ google_token });
+    expect(response.status).toBe(500);
+    expect(response.body).toHaveProperty("status", 500);
+    expect(response.body).toHaveProperty("message", "Internal Server Error");
+  });
+});
+
 describe("PATCH /edit/:id", () => {
   const data = {
     username: "dodol26",

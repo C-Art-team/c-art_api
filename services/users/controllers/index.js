@@ -68,6 +68,7 @@ class Controller {
       });
       res.json({
         access_token,
+        id: user.id,
         email,
         username: user.username,
         preference: user.preference,
@@ -96,6 +97,7 @@ class Controller {
       });
       res.json({
         access_token,
+        id: user.id,
         email,
         username: user.username,
         preference: user.preference,
