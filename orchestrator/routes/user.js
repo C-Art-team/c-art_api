@@ -4,6 +4,8 @@ const authentication = require('../middlewares/authentication')
 
 router.post("/register", ControllerUser.register)
 router.post("/login", ControllerUser.login)
+router.post("/facebookLogin", ControllerUser.facebookLogin);
+router.post("/googleLogin", ControllerUser.googleLogin);
 
 router.patch("/edit/:id", ControllerUser.editProfile)
 
