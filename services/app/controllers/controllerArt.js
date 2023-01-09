@@ -1,4 +1,4 @@
-const { Art, Preview, sequelize, Category } = require("../models");
+const { Art, Preview, sequelize, Category,Order } = require("../models");
 const { Op } = require("sequelize");
 
 class ControllerArt {
@@ -74,7 +74,7 @@ class ControllerArt {
 
       let AuthorId = req.user.id
 
-      const arts = await Art.findAll({where: {AuthorId}})
+      const arts = await Art.findAll({where: {AuthorId}, include:[{model: Preview}, {model:Category}, {model:Order}]})
 
       res.status(200).json(arts)
     } catch (error) {
