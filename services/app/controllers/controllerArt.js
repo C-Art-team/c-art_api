@@ -69,6 +69,19 @@ class ControllerArt {
     }
   }
 
+  static async getMyArt(req,res,next){
+    try {
+
+      let AuthorId = req.user.id
+
+      const arts = await Art.findAll({where: {AuthorId}})
+
+      res.status(200).json(arts)
+    } catch (error) {
+      next(error)
+    }
+  }
+
   static async getOneArt(req, res, next) {
     try {
       let { id } = req.params;

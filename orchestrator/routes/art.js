@@ -8,6 +8,8 @@ const upload = multer({
     storage: multer.memoryStorage()
 })
 
+router.get("/myarts/",authentication, ControllerArt.getMyArt)
+
 router.get("/", ControllerArt.getArts)
 router.get("/:id", ControllerArt.getArtDetail)
 

@@ -33,12 +33,28 @@ class ControllerArt {
     }
   }
 
+  static async getMyArt (req,res,next){
+    try {
+      let {access_token, user} = req.user
+
+      let {data} = await axios({
+        url:appServer + "arts" + "/myarts",
+        method:"get",
+        headers:{
+          access_token, ...user
+        }
+      })
+      
+      res.status(200).json(data)
+    } catch (error) {
+      next(error)
+    }
+  }
+
   static async addItem(req, res, next) {
     try {
       const { access_token, user } = req.user;
-      console.log(req.files);
       let itemData = new FormData();
-      console.log(req.body);
       req.files.forEach((el) => {
         itemData.append("uploadedFile", el.buffer, el.originalname);
       });
