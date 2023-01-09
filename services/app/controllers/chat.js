@@ -1,5 +1,4 @@
-const { Op } = require("sequelize");
-const { Chat, sequelize } = require("../models");
+const { Chat } = require("../models");
 
 class ControllerChat {
   static async getAllForumChat(req, res, next) {
@@ -15,7 +14,7 @@ class ControllerChat {
 
   static async newChatForum(req, res, next) {
     try {
-      console.log(req.body)
+      console.log(req.body) 
       const { text ,tag } = req.body.payload;
       const { username} = req.body.userData.user;
       const sender = username
