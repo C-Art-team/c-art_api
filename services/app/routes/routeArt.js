@@ -5,6 +5,7 @@ const fileUpload = require("../middlewares/multer");
 const { authorization, authorizationPrice } = require('../middlewares/authorization');
 const authentication = require('../middlewares/authentication')
 
+router.get("/myarts", authentication,ControllerArt.getMyArt )
 router.get("/", ControllerArt.getArts)
 router.get("/:id", ControllerArt.getOneArt)
 router.use(authentication)
