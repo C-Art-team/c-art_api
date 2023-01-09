@@ -3,7 +3,6 @@
 const errorHandler = (err, req, res, next) => {
     let status = 500
     let message = "Internal Server Error"
-    console.log(err);
     switch (err.name) {
         case "NOT FOUND":
             status = 404
