@@ -24,7 +24,33 @@ class ControllerUser{
                 url: `${USERS_URL}login`,
                 data: { email, password }
             })
-            res.status(200).json(data)
+            res.json(data)
+        } catch (err) {
+            next(err)
+        }
+    }
+    static async facebookLogin(req, res, next){
+        try {
+            const { email, username } = req.headers
+            const {data} = await axios({
+                method: 'POST',
+                url: `${USERS_URL}facebookLogin`,
+                headers: { email, username }
+            })
+            res.json(data)
+        } catch (err) {
+            next(err)
+        }
+    }
+    static async googleLogin(req, res, next){
+        try {
+            const { google_token } = req.headers
+            const {data} = await axios({
+                method: 'POST',
+                url: `${USERS_URL}googleLogin`,
+                headers: { google_token }
+            })
+            res.json(data)
         } catch (err) {
             next(err)
         }

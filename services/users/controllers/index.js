@@ -1,5 +1,10 @@
 const { User } = require("../models/");
-const { comparePassword, signToken, verifyToken } = require("../helpers/");
+const {
+  comparePassword,
+  signToken,
+  verifyToken,
+  verify,
+} = require("../helpers/");
 
 class Controller {
   static async register(req, res, next) {
@@ -30,6 +35,61 @@ class Controller {
       if (!isValidPassword) {
         throw { name: "InvalidCredentials" };
       }
+      const access_token = signToken({
+        id: user.id,
+        email,
+      });
+      res.json({
+        access_token,
+        email,
+        username: user.username,
+        preference: user.preference,
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async facebookLogin(req, res, next) {
+    try {
+      const { email, username } = req.headers;
+      const [user, created] = await User.findOrCreate({
+        where: { email },
+        defaults: {
+          email,
+          username,
+          password: "dariMarkZuckerberg",
+        },
+        hooks: false,
+      });
+      const access_token = signToken({
+        id: user.id,
+        email,
+      });
+      res.json({
+        access_token,
+        email,
+        username: user.username,
+        preference: user.preference,
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async googleLogin(req, res, next) {
+    try {
+      const { google_token } = req.headers;
+      const { email, name } = await verify(google_token);
+      const [user, created] = await User.findOrCreate({
+        where: { email },
+        defaults: {
+          email,
+          username: name,
+          password: "dariMbahGugel",
+        },
+        hooks: false,
+      });
       const access_token = signToken({
         id: user.id,
         email,
