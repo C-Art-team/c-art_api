@@ -1,0 +1,299 @@
+[
+    {
+        "name": "Ford Mustang",
+        "source": "https://storage.googleapis.com/storage-c-art.appspot.com/c-art%2Fford_mustang_19681859492d3b8.glb",
+        "price": 100000,
+        "description": "Textured Ford Mustang 3D model. This asset is ready to used for many production purpose",
+        "AuthorId": 1,
+        "status": "Active",
+        "CategoryId": 5
+    },
+    {
+        "name": "Liberty Statue Footage",
+        "source": "https://storage.googleapis.com/storage-c-art.appspot.com/c-art%2FVideo1LibertyStatue1859497ec54.mp4",
+        "price": 20000,
+        "description": "Video footage of Statue of Liberty. Recorded at 1080p 60fps, can be used for beauty shot and transition for many video purposes",
+        "AuthorId": 1,
+        "status": "Active",
+        "CategoryId": 4
+    },
+    {
+        "name": "Night Highway Footage",
+        "source": "https://storage.googleapis.com/storage-c-art.appspot.com/c-art%2FVideo2HighwayNight1859499f4ab.mp4",
+        "price": 30000,
+        "description": "Establish footage of highway in New York City at night. Recorded at 1080p 60fps",
+        "AuthorId": 1,
+        "status": "Active",
+        "CategoryId": 4
+    },
+    {
+        "name": "Night NYC Wideshot",
+        "source": "https://storage.googleapis.com/storage-c-art.appspot.com/c-art%2FVideo3NYCNight185949a9b5c.mp4",
+        "price": 25000,
+        "description": "Wideshot footage of vibrant New York City at night. Recorded at 1080p 60fps can be used for establish shot and transition for video production including film",
+        "AuthorId": 1,
+        "status": "Active",
+        "CategoryId": 4
+    },
+    {
+        "name": "Black Koenigsegg",
+        "source": "https://storage.googleapis.com/storage-c-art.appspot.com/c-art%2FKoenigsegg185949c15b7.fbx",
+        "price": 120000,
+        "description": "Black Koenigsegg 3D asset in fbx format. Already textured for production use",
+        "AuthorId": 2,
+        "status": "Active",
+        "CategoryId": 5
+    },
+    {
+        "name": "Tesla Tequila",
+        "source": "https://storage.googleapis.com/storage-c-art.appspot.com/c-art%2Ftequila185949c5b03.fbx",
+        "price": 60000,
+        "description": "Tequila with the shape of Tesla. Suitable 3D asset for prop/decoration",
+        "AuthorId": 2,
+        "status": "Active",
+        "CategoryId": 5
+    },
+    {
+        "name": "Helicopter v2",
+        "source": "https://storage.googleapis.com/storage-c-art.appspot.com/c-art%2Fhelicopter_v2185949ca301.glb",
+        "price": 90000,
+        "description": "3D asset of white helicopter in glb format. Already textured for use in many production purpose",
+        "AuthorId": 2,
+        "status": "Active",
+        "CategoryId": 5
+    },
+    {
+        "name": "Fireball Effect",
+        "source": "https://storage.googleapis.com/storage-c-art.appspot.com/c-art%2Fvfx1Fireball_Day_05185949d9070.mov",
+        "price": 70000,
+        "description": "Fireball Effect for audio visual production. Formatted in Mov 1080p 24fps ",
+        "AuthorId": 1,
+        "status": "Active",
+        "CategoryId": 3
+    },
+    {
+        "name": "Water Blast",
+        "source": "https://storage.googleapis.com/storage-c-art.appspot.com/c-art%2Fvfx2Water_Blast_03185949e925a.mov",
+        "price": 65000,
+        "description": "Water blast Effect for audio visual production. Ready to use for movies/other content. Formatted in Mov 1080 24fps ",
+        "AuthorId": 1,
+        "status": "Active",
+        "CategoryId": 3
+    },
+    {
+        "name": "Shockwave",
+        "source": "https://storage.googleapis.com/storage-c-art.appspot.com/c-art%2Fvfx3Shockwave_15185949f64a5.mov",
+        "price": 65000,
+        "description": "Shockwave Effect Formatted in Mov 1080 24fps. Ready to use for movies/other content ",
+        "AuthorId": 1,
+        "status": "Active",
+        "CategoryId": 3
+    },
+    {
+        "name": "Sparks",
+        "source": "https://storage.googleapis.com/storage-c-art.appspot.com/c-art%2Fvfx4Sparks_0118594a00274.mov",
+        "price": 75000,
+        "description": "Sparks Effect Formatted in Mov 1080 24fps. Ready to use for movies/other content ",
+        "AuthorId": 2,
+        "status": "Active",
+        "CategoryId": 3
+    },
+    {
+        "name": "Glass Smash",
+        "source": "https://storage.googleapis.com/storage-c-art.appspot.com/c-art%2Fvfx5Glass_Smash_0118594a0fc45.mov",
+        "price": 75000,
+        "description": "Glass Smash effect ready to use for movies/other content. formatted in Mov 1080 24fps",
+        "AuthorId": 2,
+        "status": "Active",
+        "CategoryId": 3
+    },
+    {
+        "name": "Super Jets Overhead",
+        "source": "https://storage.googleapis.com/storage-c-art.appspot.com/c-art%2Fsfx1%20Super%20Jets%20Overhead%200518595021054.wav",
+        "price": 55000,
+        "description": "Fighter jet overhead sound effect. formatted in audio format WAV suitable for games, movies and audio content",
+        "AuthorId": 2,
+        "status": "Active",
+        "CategoryId": 1
+    },
+    {
+        "name": "Zap Synth SFX",
+        "source": "https://storage.googleapis.com/storage-c-art.appspot.com/c-art%2Fsfx2%20Zap%20Synth%200118595087f5b.wav",
+        "price": 45000,
+        "description": "Zap Synth sound effect. formatted in audio format WAV suitable for games, movies and audio content",
+        "AuthorId": 1,
+        "status": "Active",
+        "CategoryId": 1
+    },
+    {
+        "name": "Explosion Large",
+        "price": 50000,
+        "description": "Explosion SFX. Can be used for audio visual production including video games, movies and audio content",
+        "AuthorId": 1,
+        "source": "https://storage.googleapis.com/storage-c-art.appspot.com/c-art%2Fsfx%203%20Explosion%20Large%202x%2001185950e265b.wav",
+        "CategoryId": 1,
+        "status": "Active"
+    },
+    {
+        "name": "Firework SFX",
+        "price": 65000,
+        "description": "Firework SFX. Can be used for audio visual production including video games, movies and audio content. Rendered in Wav format",
+        "AuthorId": 2,
+        "source": "https://storage.googleapis.com/storage-c-art.appspot.com/c-art%2Fsfx%204%20Firework1859512dea6.wav",
+        "CategoryId": 1,
+        "status": "Active"
+    },
+    {
+        "name": "WW2 Battlefield Effects",
+        "source": "https://storage.googleapis.com/storage-c-art.appspot.com/c-art%2Fsfx5%20WWII%20Battlefield%20011859515588a.wav",
+        "price": 70000,
+        "description": "WW2 Battlefield Effects. Can be used for audio visual production including video games, movies and audio content. Rendered in Wav format",
+        "AuthorId": 1,
+        "status": "Active",
+        "CategoryId": 1
+    },
+    {
+        "name": "Interstellar Mood",
+        "price": 50000,
+        "description": "Music with ambient genre for audio / visual production. Rendered in mp3",
+        "AuthorId": 1,
+        "source": "https://storage.googleapis.com/storage-c-art.appspot.com/c-art%2Fmusic1Interstellar%20Mood%20-%20Nico%20Staf185951adf45.mp3",
+        "CategoryId": 2,
+        "status": "Active"
+    },
+    {
+        "name": "Joy to the World",
+        "price": 45000,
+        "description": "Music with cinematic genre and happy mood for audio / visual production. Rendered in mp3",
+        "AuthorId": 1,
+        "source": "https://storage.googleapis.com/storage-c-art.appspot.com/c-art%2Fmusic2%20Joy%20To%20The%20World%20-%20DJ%20Williams185951d0d95.mp3",
+        "CategoryId": 2,
+        "status": "Active"
+    },
+    {
+        "name": "Lament of the Ancients",
+        "price": 40000,
+        "description": "Music with ambient genre and sad mood for audio / visual production. Rendered in mp3",
+        "AuthorId": 1,
+        "source": "https://storage.googleapis.com/storage-c-art.appspot.com/c-art%2Fmusic3%20Lament%20Of%20The%20Ancients%20-%20Asher%20Fulero185951f8e99.mp3",
+        "CategoryId": 2,
+        "status": "Active"
+    },
+    {
+        "name": "Like it Loud",
+        "price": 55000,
+        "description": "Music with dance-electronic genre and happy mood for audio / visual production. Rendered in mp3",
+        "AuthorId": 2,
+        "source": "https://storage.googleapis.com/storage-c-art.appspot.com/c-art%2Fmusic4%20Like%20It%20Loud%20-%20Dyalla1859521beba.mp3",
+        "CategoryId": 2,
+        "status": "Active"
+    },
+    {
+        "name": "Mulholland",
+        "price": 55000,
+        "description": "Music with R&B-Soul genre and Funky mood for audio / visual production. Rendered in mp3",
+        "AuthorId": 1,
+        "source": "https://storage.googleapis.com/storage-c-art.appspot.com/c-art%2Fmusic5%20Mulholland%20-%20King%20Canyon1859529a3db.mp3",
+        "CategoryId": 2,
+        "status": "Active"
+    },
+    {
+        "name": "Smoke Image",
+        "price": 20000,
+        "description": "PNG image of smoke. Useful for create visual artwork",
+        "AuthorId": 2,
+        "source": "https://storage.googleapis.com/storage-c-art.appspot.com/c-art%2Fimage1Fog185952efbfe.png",
+        "CategoryId": 7,
+        "status": "Active"
+    },
+    {
+        "name": "2D Fog Image",
+        "price": 20000,
+        "description": "2D image of fog PNG. Can be used for create visual artwork/content",
+        "AuthorId": 1,
+        "source": "https://storage.googleapis.com/storage-c-art.appspot.com/c-art%2Fimage2smoke18595314737.png",
+        "CategoryId": 7,
+        "status": "Active"
+    },
+    {
+        "name": "Cleaning Boy Clipart",
+        "price": 10000,
+        "description": "2D clipart of cleaning boy. Can be used for create visual content on social media and graphics content",
+        "AuthorId": 1,
+        "source": "https://storage.googleapis.com/storage-c-art.appspot.com/c-art%2Fimage3Cleaning_boy18595347303.png",
+        "CategoryId": 7,
+        "status": "Active"
+    },
+    {
+        "name": "Gardeners",
+        "source": "https://storage.googleapis.com/storage-c-art.appspot.com/c-art%2Fimage4Gardener185953618e9.png",
+        "price": 10000,
+        "description": "2D clipart of gardeners. Can be used for create visual content on social media and graphics content",
+        "AuthorId": 1,
+        "status": "Active",
+        "CategoryId": 7
+    },
+    {
+        "name": "Woman with Specs",
+        "price": 10000,
+        "description": "PNG image of woman. Can be used for create visual content on social media others",
+        "AuthorId": 1,
+        "source": "https://storage.googleapis.com/storage-c-art.appspot.com/c-art%2Fimage5woman-with-specs_11859537cd00.png",
+        "CategoryId": 7,
+        "status": "Active"
+    },
+    {
+        "name": "Bearded Man",
+        "price": 10000,
+        "description": "PNG image of bearded man. Can be used for create visual content on social media others",
+        "AuthorId": 1,
+        "source": "https://storage.googleapis.com/storage-c-art.appspot.com/c-art%2Fimage6bearded-man185953a0d60.png",
+        "CategoryId": 7,
+        "status": "Active"
+    },
+    {
+        "name": "Flock of Birds",
+        "price": 15000,
+        "description": "Image of birds in PNG. Can be used for create visual artwork",
+        "AuthorId": 1,
+        "source": "https://storage.googleapis.com/storage-c-art.appspot.com/c-art%2Fimage7Birds185953f9428.png",
+        "CategoryId": 7,
+        "status": "Active"
+    },
+    {
+        "name": "Alterasi Dogma Altruistik",
+        "price": 100000,
+        "description": "Ready script for short movie. A story about a boy who still finds his identity in his self-crisis existential persona",
+        "AuthorId": 2,
+        "source": "https://storage.googleapis.com/storage-c-art.appspot.com/c-art%2Fscript1%20Alterasi%20Dogma%20Altruistik%20Rama%20185954a1ec1.pdf",
+        "CategoryId": 6,
+        "status": "Active"
+    },
+    {
+        "name": "Ibu",
+        "price": 90000,
+        "description": "Ready script for short movie. \"Ibu\", is a touching story about mother and son who fight for their life to survive.",
+        "AuthorId": 1,
+        "source": "https://storage.googleapis.com/storage-c-art.appspot.com/c-art%2Fscript2Ibu185954d0114.pdf",
+        "CategoryId": 6,
+        "status": "Active"
+    },
+    {
+        "name": "Semu (Before 9 PM)",
+        "price": 105000,
+        "description": "Script for short movie. This script tells a story about young couple who are disturbed by mysterious phone call.",
+        "AuthorId": 1,
+        "source": "https://storage.googleapis.com/storage-c-art.appspot.com/c-art%2Fscript3%20Semu%20(%20Before%209%20PM)1859553de70.pdf",
+        "CategoryId": 6,
+        "status": "Active"
+    },
+    {
+        "name": "Rumah",
+        "price": 115000,
+        "description": "A story about a girl who worries about her destiny as a child of two different religion parents",
+        "AuthorId": 1,
+        "source": "https://storage.googleapis.com/storage-c-art.appspot.com/c-art%2FScript4Rumah%20Final%20Draft%20Rapih185955ac21d.pdf",
+        "CategoryId": 6,
+        "status": "Active"
+    }
+]
