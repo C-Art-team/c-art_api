@@ -74,6 +74,7 @@ class orderController {
                 data: { artId, amount },
                 headers: { access_token, ...user }
             })
+            await redis.del("orders")
             res.json(data)
 
         } catch (error) {
@@ -92,6 +93,7 @@ class orderController {
                 data: {},
                 headers: { access_token, ...user }
             })
+            await redis.del(`orders`)
             res.json(data)
         } catch (error) {
             next(error)
@@ -108,6 +110,7 @@ class orderController {
                 url: `${APP_URL}orders/${id}`,
                 headers: { access_token, ...user }
             })
+            await redis.del("orders")
             res.json(data)
         } catch (error) {
             next(error)

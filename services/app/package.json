@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "jest --runInBand --forceExit --setTimeout=1000 --verbose",
+    "test": "jest --runInBand --forceExit --setTimeout=1000 --verbose --coverage",
     "db:dev": "npx sequelize-cli db:drop && npx sequelize-cli db:create && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all",
     "db:test": "npx sequelize-cli --env=test db:drop && npx sequelize-cli --env=test db:create && npx sequelize-cli --env=test db:migrate && npx sequelize-cli --env=test db:seed:all",
     "start": "node app.js",

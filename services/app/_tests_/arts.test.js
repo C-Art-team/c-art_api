@@ -10,8 +10,16 @@ const userDummy = {
     preference: "Image Asset",
 };
 
+const userDummy2 = {
+    access_token: 1,
+    id: 2,
+    email: "dodolabc@gmail.com",
+    username: "dodol26",
+    preference: "Image Asset",
+}
+
 const artDummy = {
-    "name": "testNamee",
+    "name": "name",
     "source": "testSource",
     "price": 1234,
     "description": "testDesc",
@@ -32,8 +40,22 @@ const artDummy = {
     ]
 }
 
+const inactiveArt = {
+    ...artDummy, status: 'Inactive', name: 'name2', AuthorId: 2
+}
+
+const inactiveArt2 = {
+    ...artDummy, status: 'Inactive', name: 'name3', AuthorId: 1
+}
+
 beforeAll(async () => {
     await Art.create(artDummy)
+        .then(_ => {
+            return Art.create(inactiveArt)
+        })
+        .then(_ => {
+            return Art.create(inactiveArt2)
+        })
 })
 
 beforeEach(() => {
@@ -69,11 +91,12 @@ afterAll(async () => {
 //                 ]
 //             }
 //         }
-//         request(app)
-//             .post.mockResolvedValue(successPost)
 //         return request(app)
 //             .post("/arts")
+//             .send(successPost)
+//             .set(userDummy)
 //             .then((res) => {
+//                 // console.log(res.req);
 //                 expect(res).toEqual(successPost)
 //             })
 //     })
@@ -88,7 +111,6 @@ describe("FINDALL /arts", () => {
             .get("/arts")
             .then((response) => {
                 const { body, status } = response
-
                 expect(status).toBe(200)
                 expect(Array.isArray(body)).toBeTruthy();
                 expect(body.length).toBeGreaterThan(0);
@@ -98,7 +120,19 @@ describe("FINDALL /arts", () => {
                 done(err)
             }))
     })
-    
+
+    test("500 - Internal server error", async () => {
+        jest.spyOn(Art, 'findAll').mockRejectedValue('Error')
+        return request(app)
+            .get('/arts')
+            .then((res) => {
+                expect(res.status).toBe(500)
+                expect(res.body).toHaveProperty('message', expect.any(String))
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+    })
 })
 
 describe("FINDONE /arts", () => {
@@ -221,10 +255,26 @@ describe("PATCH /arts/:id", () => {
 })
 
 describe("POST /arts/:id", () => {
+    test("200 - Success reactivate art", (done) => {
+        request(app)
+            .post("/arts/2")
+            .set(userDummy2)
+            .then((response) => {
+                const { body, status } = response
+
+                expect(status).toBe(200)
+                expect(body).toEqual(expect.any(Object))
+                expect(body).toHaveProperty('message', expect.any(String));
+                done()
+            })
+            .catch((err) => {
+                done(err)
+            })
+    })
 
     test("404 - Fail art not found", (done) => {
         request(app)
-            .delete("/arts/999")
+            .post("/arts/999")
             .set(userDummy)
             .then((response) => {
                 const { body, status } = response
@@ -239,8 +289,19 @@ describe("POST /arts/:id", () => {
             })
     })
 
-    // fail karena dia active
-    // fail karena authorId != req.user.id
+    test("401 - Unauthorized", (done) => {
+        request(app)
+            .post("/arts/2")
+            .send(userDummy)
+            .then((res) => {
+                const { body, status } = res
+                expect(status).toBe(401)
+                expect(body).toEqual(expect.any(Object))
+                expect(body).toHaveProperty('message', expect.any(String));
+                done()
+            })
+            .catch((err => done(err)))
+    })
 })
 
 describe("DELETEONE /arts/:id", () => {
@@ -276,5 +337,17 @@ describe("DELETEONE /arts/:id", () => {
             })
     })
 
-    // fail karena dia inactive
+    test("401 - Unauthorized", (done) => {
+        request(app)
+            .delete("/arts/1")
+            .send(userDummy2)
+            .then((res) => {
+                const { body, status } = res
+                expect(status).toBe(401)
+                expect(body).toEqual(expect.any(Object))
+                expect(body).toHaveProperty('message', expect.any(String));
+                done()
+            })
+            .catch((err => done(err)))
+    })
 })

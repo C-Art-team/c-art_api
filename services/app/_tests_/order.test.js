@@ -48,16 +48,27 @@ const orderDummy = {
     orderDate: new Date()
 }
 
+const orderDummy2 = {
+    customerId: 1,
+    artId: 1,
+    amount: 1,
+    status: 'Unpaid',
+    orderDate: new Date()
+}
+
 beforeAll(async () => {
     await Art.create(artDummy)
         .then(_ => {
             return Order.create(orderDummy)
+                .then(_ => {
+                    return Order.create(orderDummy2)
+                })
         })
         .catch(err => console.log(err))
 })
 
 afterAll(async () => {
-    await Order.destroy({ truncate: true, cascade:true, restartIdentity: true })
+    await Order.destroy({ truncate: true, cascade: true, restartIdentity: true })
         .then(_ => {
             return Art.destroy({ truncate: true, restartIdentity: true, cascade: true })
             // .then(_ => {
@@ -74,7 +85,6 @@ beforeEach(() => {
 describe("FINDALL /orders", () => {
 
     test("200 - Success getAll orders", (done) => {
-
         request(app)
             .get("/orders")
             .set(userDummy)
@@ -91,6 +101,34 @@ describe("FINDALL /orders", () => {
 
     test("500 - Internal server error", async () => {
         jest.spyOn(Order, 'findAll').mockRejectedValue('Error')
+        return request(app)
+            .get('/orders')
+            .set(userDummy)
+            .then((res) => {
+                expect(res.status).toBe(500)
+                expect(res.body).toHaveProperty('message', expect.any(String))
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+    })
+
+    test("401 - NO TOKEN", (done) => {
+        request(app)
+            .get("/orders")
+            .then((response) => {
+                const { body, status } = response
+
+                expect(status).toBe(401)
+                expect(body).toHaveProperty('status', expect.any(Number))
+                expect(body).toHaveProperty('message', expect.any(String))
+                done();
+            })
+            .catch((err => console.log(err)))
+    })
+
+    test("500 - Internal server error", async () => {
+        jest.spyOn(Order, 'update').mockRejectedValue('Error')
         return request(app)
             .get('/orders')
             .set(userDummy)
@@ -140,6 +178,34 @@ describe("FINDONE /orders", () => {
                 done()
             })
             .catch((err) => done(err))
+    })
+
+    test("401 - NO TOKEN", (done) => {
+        request(app)
+            .get("/orders/1")
+            .then((response) => {
+                const { body, status } = response
+
+                expect(status).toBe(401)
+                expect(body).toHaveProperty('status', expect.any(Number))
+                expect(body).toHaveProperty('message', expect.any(String))
+                done();
+            })
+            .catch((err => console.log(err)))
+    })
+
+    test("500 - Internal server error", async () => {
+        jest.spyOn(Order, 'update').mockRejectedValue('Error')
+        return request(app)
+            .get('/orders/1')
+            .set(userDummy)
+            .then((res) => {
+                expect(res.status).toBe(500)
+                expect(res.body).toHaveProperty('message', expect.any(String))
+            })
+            .catch((err) => {
+                console.log(err)
+            })
     })
 })
 
@@ -229,11 +295,41 @@ describe("POSTONE /orders", () => {
             })
             .catch(err => done(err))
     })
+
+    test("401 - NO TOKEN", (done) => {
+        request(app)
+            .post("/orders")
+            .send(postOrderDummy)
+            .then((response) => {
+                const { body, status } = response
+
+                expect(status).toBe(401)
+                expect(body).toHaveProperty('status', expect.any(Number))
+                expect(body).toHaveProperty('message', expect.any(String))
+                done();
+            })
+            .catch((err => console.log(err)))
+    })
+
+    test("500 - Internal server error", async () => {
+        jest.spyOn(Order, 'update').mockRejectedValue('Error')
+        return request(app)
+            .post('/orders')
+            .send(postOrderDummy)
+            .set(userDummy)
+            .then((res) => {
+                expect(res.status).toBe(500)
+                expect(res.body).toHaveProperty('message', expect.any(String))
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+    })
 })
 
 describe("PATCHONE /orders", () => {
-    test("200 - Success update order status to paid", async () => {
-        return request(app)
+    test("200 - Success update order status to paid", (done) => {
+        request(app)
             .patch("/orders/1")
             .send()
             .set(userDummy)
@@ -242,9 +338,9 @@ describe("PATCHONE /orders", () => {
                 expect(status).toBe(200)
                 expect(body).toBeInstanceOf(Object)
                 expect(body).toHaveProperty("message", expect.any(String))
-                // done()
+                done()
             }))
-            .catch(err => console.log(err))
+            .catch(err => done(err))
     })
 
     test("404 - Fail order not found", (done) => {
@@ -264,8 +360,50 @@ describe("PATCHONE /orders", () => {
             .catch((err) => done(err))
     })
 
-    // test unauthorized
+    test("401 - NO TOKEN", (done) => {
+        request(app)
+            .patch("/orders/1")
+            .send()
+            .then((response) => {
+                const { body, status } = response
 
+                expect(status).toBe(401)
+                expect(body).toHaveProperty('status', expect.any(Number))
+                expect(body).toHaveProperty('message', expect.any(String))
+                done();
+            })
+            .catch((err => console.log(err)))
+    })
+
+    test("401 - UNAUTHORIZED", (done) => {
+        request(app)
+            .patch("/orders/1")
+            .send()
+            .set(userDummy2)
+            .then((res => {
+                const { body, status } = res
+                expect(status).toBe(401)
+                expect(body).toBeInstanceOf(Object)
+                expect(body).toHaveProperty("message", expect.any(String))
+                done()
+            }))
+            .catch(err => done(err))
+    })
+
+    test("500 - Internal server error", async () => {
+        jest.spyOn(Order, 'update').mockRejectedValue('Error')
+        return request(app)
+            .patch('/orders/2')
+            .send()
+            .set(userDummy)
+            .then((res) => {
+                expect(res.status).toBe(500)
+                expect(res.body).toHaveProperty('message', expect.any(String))
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+    })
 })
 
 describe("DELETEONE /orders", () => {
@@ -289,7 +427,6 @@ describe("DELETEONE /orders", () => {
             .set(userDummy)
             .then((res) => {
                 const { body, status } = res
-                console.log(body);
                 expect(status).toBe(404)
                 expect(body).toEqual(expect.any(Object))
                 expect(body).toHaveProperty('status', expect.any(Number));
@@ -297,5 +434,80 @@ describe("DELETEONE /orders", () => {
                 done()
             })
             .catch(err => done(err))
+    })
+
+    test("401 - NO TOKEN", (done) => {
+        request(app)
+            .delete("/orders/1")
+            .then((response) => {
+                const { body, status } = response
+
+                expect(status).toBe(401)
+                expect(body).toHaveProperty('status', expect.any(Number))
+                expect(body).toHaveProperty('message', expect.any(String))
+                done();
+            })
+            .catch((err => console.log(err)))
+    })
+
+    test("401 - UNAUTHORIZED", (done) => {
+        request(app)
+            .delete("/orders/2")
+            .send()
+            .set(userDummy2)
+            .then((res => {
+                const { body, status } = res
+                expect(status).toBe(401)
+                expect(body).toBeInstanceOf(Object)
+                expect(body).toHaveProperty("message", expect.any(String))
+                done()
+            }))
+            .catch(err => done(err))
+    })
+
+    test("500 - Internal server error", async () => {
+        jest.spyOn(Order, 'destroy').mockRejectedValue('Error')
+        return request(app)
+            .delete('/orders/2')
+            .set(userDummy)
+            .then((res) => {
+                expect(res.status).toBe(500)
+                expect(res.body).toHaveProperty('message', expect.any(String))
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+    })
+})
+
+describe("GENERATE TOKEN /pay/:id", () => {
+    test("200 - Success get token", (done) => {
+        request(app)
+            .get("/orders/pay/2")
+            .set(userDummy)
+            .then((res) => {
+                const { body, status } = res
+                expect(status).toBe(200)
+                expect(body).toBeInstanceOf(Object)
+                expect(body).toHaveProperty("token", expect.any(String))
+                expect(body).toHaveProperty("redirect_url", expect.any(String))
+                done()
+            })
+            .catch(err => done(err))
+
+    })
+
+    test("500 - Internal server error", async () => {
+        jest.spyOn(Order, 'findOne').mockRejectedValue('Error')
+        return request(app)
+            .get('/orders/pay/1')
+            .set(userDummy)
+            .then((res) => {
+                expect(res.status).toBe(500)
+                expect(res.body).toHaveProperty('message', expect.any(String))
+            })
+            .catch((err) => {
+                console.log(err)
+            })
     })
 })
