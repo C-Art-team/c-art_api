@@ -68,6 +68,7 @@ class Controller {
   }
 
   static async login(req, res, next) {
+    // console.log('login')
     try {
       const { email, password } = req.body;
       if (!email || !password) {

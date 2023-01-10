@@ -28,33 +28,34 @@ class ControllerArt {
         method: "get",
       });
 
-      const user = await axios.get(serviceUser + `/${data.AuthorId}`).data.username
-      console.log(user) 
+      const { data: user } = await axios.get(serviceUser + `${data.AuthorId}`)
+      console.log(user)
 
       const detailArt = {
         ...data,
-        authorName : user
+        authorName: user.username
       }
 
       console.log(detailArt)
       res.status(200).json(detailArt);
     } catch (error) {
+      // console.log(error)
       next(error);
     }
   }
 
-  static async getMyArt (req,res,next){
+  static async getMyArt(req, res, next) {
     try {
-      let {access_token, user} = req.user
+      let { access_token, user } = req.user
 
-      let {data} = await axios({
-        url:appServer + "arts" + "/myarts",
-        method:"get",
-        headers:{
+      let { data } = await axios({
+        url: appServer + "arts" + "/myarts",
+        method: "get",
+        headers: {
           access_token, ...user
         }
       })
-      
+
       res.status(200).json(data)
     } catch (error) {
       next(error)
@@ -65,68 +66,68 @@ class ControllerArt {
     try {
       const { access_token, user } = req.user;
       let itemData = new FormData();
-     
+
       let format = req.files[0].originalname.split(".")[1]
 
-      if(req.files.length === 1){
-        throw {response: {data: {message:"Previews cannot be empty", status:400}}} 
+      if (req.files.length === 1) {
+        throw { response: { data: { message: "Previews cannot be empty", status: 400 } } }
       }
 
       let previews = req.files.slice(1)
 
-      if(req.body.CategoryId == 1 || req.body.CategoryId == 2){
+      if (req.body.CategoryId == 1 || req.body.CategoryId == 2) {
         //SoundEffect && music
-        if(format !== "mp3" && format !== "wav"){
-          throw {response:{data:{message:"Sound format must be mp3 or wav", status:400}}}
+        if (format !== "mp3" && format !== "wav") {
+          throw { response: { data: { message: "Sound format must be mp3 or wav", status: 400 } } }
         }
 
         previews.map(el => {
           let prevFormat = el.originalname.split(".")[1]
 
-          if ( prevFormat !== "mp3" && prevFormat !== "wav"){
-            throw {response:{data:{message:"Music/SFX preview format must be mp3 or wav", status:400}}}
+          if (prevFormat !== "mp3" && prevFormat !== "wav") {
+            throw { response: { data: { message: "Music/SFX preview format must be mp3 or wav", status: 400 } } }
           }
         })
 
       }
 
-      if(req.body.CategoryId == 3 || req.body.CategoryId == 4){
+      if (req.body.CategoryId == 3 || req.body.CategoryId == 4) {
         //VIDEO && VFX
-        if(format !== "mp4" && format !== "mov"){
-          throw {response:{data:{message:"Video format must be mp4 or mov", status:400}}}
+        if (format !== "mp4" && format !== "mov") {
+          throw { response: { data: { message: "Video format must be mp4 or mov", status: 400 } } }
         }
 
-        
+
       }
 
-      if(req.body.CategoryId == 5 ){
+      if (req.body.CategoryId == 5) {
         //3DMODEL
-        if(format !== "fbx" && format !== "obj" && format !== "glb" && format !== "gltf"){
-          throw {response:{data:{message:"3D asset format must be fbx, obj, glb or gltf", status:400}}}
+        if (format !== "fbx" && format !== "obj" && format !== "glb" && format !== "gltf") {
+          throw { response: { data: { message: "3D asset format must be fbx, obj, glb or gltf", status: 400 } } }
         }
       }
 
-      if(req.body.CategoryId == 6 ){
+      if (req.body.CategoryId == 6) {
         //SCRIPT
-        if(format !== "pdf"){
-          throw {response:{data:{message:"Script format must be pdf", status:400}}}
+        if (format !== "pdf") {
+          throw { response: { data: { message: "Script format must be pdf", status: 400 } } }
         }
       }
 
-      if(req.body.CategoryId == 7 ){
+      if (req.body.CategoryId == 7) {
         //IMAGE ASSET
-        if(format !== "png" && format !== "jpg"){
-          throw {response:{data:{message:"Script format must be png or jpg", status:400}}}
+        if (format !== "png" && format !== "jpg") {
+          throw { response: { data: { message: "Script format must be png or jpg", status: 400 } } }
         }
       }
 
-      
-      if(req.body.CategoryId != 1 && req.body.CategoryId != 2){
+
+      if (req.body.CategoryId != 1 && req.body.CategoryId != 2) {
         previews.map(el => {
           let prevFormat = el.originalname.split(".")[1]
 
-          if ( prevFormat !== "png" && prevFormat !== "jpg"){
-            throw {response:{data:{message:"For non-sound art preview format must be png or jpg", status:400}}}
+          if (prevFormat !== "png" && prevFormat !== "jpg") {
+            throw { response: { data: { message: "For non-sound art preview format must be png or jpg", status: 400 } } }
           }
         })
       }

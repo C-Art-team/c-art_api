@@ -1,4 +1,4 @@
-const { Art, Preview, sequelize, Category,Order } = require("../models");
+  const { Art, Preview, sequelize, Category,Order } = require("../models");
 const { Op } = require("sequelize");
 
 class ControllerArt {
