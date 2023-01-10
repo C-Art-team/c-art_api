@@ -29,6 +29,9 @@ function errorHandler(err, req, res, next) {
   } else if (err.name === "UserEmpty") {
     status = 400;
     message = "Username cannot be empty";
+  } else if (err.name === "AlreadyVerified") {
+    status = 400;
+    message = "Email already verified";
   }
 
   res.status(status).json({ status, message });
