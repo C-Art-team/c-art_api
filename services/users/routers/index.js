@@ -4,6 +4,7 @@ const authentication = require("../middlewares/authentication");
 const authorization = require("../middlewares/authorization");
 
 router.post("/register", Controller.register);
+router.get("/register/verify/:token", Controller.verify);
 router.post("/login", Controller.login);
 router.post("/facebookLogin", Controller.facebookLogin);
 router.post("/googleLogin", Controller.googleLogin);
@@ -14,7 +15,7 @@ router.get("/authenticating", Controller.authenticating);
 
 router.use(authentication);
 
-router.get("/profile", Controller.userProfile)
+router.get("/profile", Controller.userProfile);
 
 router.delete("/delete/:id", authorization, Controller.deleteAccount);
 

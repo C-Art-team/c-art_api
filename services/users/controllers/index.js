@@ -1,15 +1,61 @@
-const { User } = require("../models/");
+const { User, sequelize } = require("../models/");
 const {
   comparePassword,
   signToken,
   verifyToken,
   verify,
+  registerVerify,
+  signRegisterToken,
+  verifyRegisterToken,
 } = require("../helpers/");
+const { Op } = require("sequelize");
 
 class Controller {
   static async register(req, res, next) {
+    const t = await sequelize.transaction();
     try {
       const { email, password, username } = req.body;
+      await User.create(
+        {
+          email,
+          password,
+          username,
+        },
+        { transaction: t }
+      );
+      await t.rollback();
+      const token = signRegisterToken({
+        email,
+        password,
+        username,
+      });
+      registerVerify(email, username, token);
+      res.json({ message: `Please check your email to verify ${email}` });
+    } catch (err) {
+      await t.rollback();
+      next(err);
+    }
+  }
+
+  static async verify(req, res, next) {
+    try {
+      const { token } = req.params;
+      const { email, password, username } = verifyRegisterToken(token);
+      const user = await User.findOne({
+        where: {
+          [Op.or]: [
+            {
+              email,
+            },
+            {
+              username,
+            },
+          ],
+        },
+      });
+      if (user) {
+        throw { name: "AlreadyVerified" };
+      }
       const newUser = await User.create({
         email,
         password,
