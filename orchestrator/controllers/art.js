@@ -1,5 +1,6 @@
 const axios = require("axios");
 const appServer = process.env.APP_URL;
+const serviceUser = process.env.USERS_URL
 const FormData = require("form-data");
 
 class ControllerArt {
@@ -27,7 +28,16 @@ class ControllerArt {
         method: "get",
       });
 
-      res.status(200).json(data);
+      const user = await axios.get(serviceUser + `/${data.AuthorId}`).data.username
+      console.log(user) 
+
+      const detailArt = {
+        ...data,
+        authorName : user
+      }
+
+      console.log(detailArt)
+      res.status(200).json(detailArt);
     } catch (error) {
       next(error);
     }
