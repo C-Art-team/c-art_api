@@ -28,15 +28,13 @@ class ControllerArt {
         method: "get",
       });
 
-      const user = await axios.get(serviceUser + `/${data.AuthorId}`).data.username
-      console.log(user) 
+      const {data : user} = await axios.get(serviceUser + `${data.AuthorId}`)
 
       const detailArt = {
         ...data,
-        authorName : user
+        authorName : user.username
       }
 
-      console.log(detailArt)
       res.status(200).json(detailArt);
     } catch (error) {
       next(error);

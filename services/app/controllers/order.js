@@ -10,7 +10,7 @@ class ControllerOrder {
 
             const artOrdered = await Art.findByPk(artId)
             
-            if (!customerId || amount <= 0 || !artOrdered || artOrdered.AuthorId === customerId) throw { name: 'INVALID ORDER' }
+            if (!customerId || amount <= 0 || !artOrdered || artOrdered.AuthorId === +customerId) throw { name: 'INVALID ORDER' }
 
             console.log(customerId, 'cust id');
             console.log(amount, 'amount');
