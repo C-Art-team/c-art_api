@@ -10,7 +10,7 @@ function registerVerify(email, username, token) {
       pass: process.env.NODEMAILER_PASS,
     },
   });
-  let info = transporter.sendMail({
+  transporter.sendMail({
     from: "dodoru26@gmail.com",
     to: email,
     subject: "Verify your email!",
