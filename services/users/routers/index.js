@@ -13,10 +13,17 @@ router.patch("/edit/:id", Controller.editProfile);
 
 router.get("/authenticating", Controller.authenticating);
 
-router.use(authentication);
+// router.use(authentication);
 
-router.get("/profile", Controller.userProfile);
+router.get("/profile", authentication, Controller.userProfile);
 
-router.delete("/delete/:id", authorization, Controller.deleteAccount);
+router.delete(
+  "/delete/:id",
+  authentication,
+  authorization,
+  Controller.deleteAccount
+);
+
+router.get("/:id", Controller.userDetail);
 
 module.exports = router;

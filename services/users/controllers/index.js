@@ -242,6 +242,19 @@ class Controller {
       next(err);
     }
   }
+
+  static async userDetail(req, res, next) {
+    try {
+      const { id } = req.params;
+      const user = await User.findOne({ where: { id } });
+      if (!user) {
+        throw { name: "UserNotFound" };
+      }
+      res.json(user);
+    } catch (err) {
+      next(err);
+    }
+  }
 }
 
 module.exports = Controller;
