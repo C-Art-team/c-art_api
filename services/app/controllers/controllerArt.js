@@ -5,6 +5,10 @@ class ControllerArt {
   static async createArt(req, res, next) {
     const t = await sequelize.transaction();
     try {
+
+      // console.log(req.isSingle);
+      
+
       const AuthorId = req.user.id;
       let { name, price, description, CategoryId } = req.body;
       // console.log(req.files);
@@ -20,12 +24,13 @@ class ControllerArt {
       });
 
       let previews = req.files.slice(1);
+     
       let convertedPreviews = previews.map((el) => {
         el.sourceUrl = el.publicUrl;
         el.ArtId = art.dataValues.id;
         return el;
       });
-
+      
       let newPreviews = await Preview.bulkCreate(convertedPreviews);
 
       await t.commit();
