@@ -48,19 +48,43 @@ const inactiveArt2 = {
     ...artDummy, status: 'Inactive', name: 'name3', AuthorId: 1
 }
 
+// jest.mock('multer', () => {
+//     const multer = () => ({
+//         array: () => {
+//             return (req, res, next) => {
+//                 req.body = {
+//                     name: 'mockName',
+//                     price: 123,
+//                     description: 'mockDesc',
+//                     CategoryId: 1,
+//                     AuthorId: 1,
+//                     status: 'mockStatus',
+
+//                 }
+//                 req.files = [{
+//                     publicUrl: 'mockUrl'
+//                 }]
+//                 return next()
+//             }
+//         }
+//     })
+//     multer.memoryStorage = () => jest.fn()
+//     return multer
+// })
+
 beforeAll(async () => {
     await Art.create(artDummy)
         .then(_ => {
             return Art.create(inactiveArt)
+        })
+        .then(() => {
+
         })
         .then(_ => {
             return Art.create(inactiveArt2)
         })
 })
 
-beforeEach(() => {
-    jest.restoreAllMocks()
-})
 
 afterAll(async () => {
     await Art.destroy({ truncate: true, cascade: true, restartIdentity: true })
@@ -70,37 +94,55 @@ afterAll(async () => {
         .catch((err) => console.log(err))
 })
 
+
+
 // describe("POSTONE /arts", () => {
-//     test("201 - created", (done) => {
-//         const successPost = {
-//             art: {
-//                 "id": 2,
-//                 "name": "testDiDuaKopi",
-//                 "price": 10000,
-//                 "description": "test",
-//                 "AuthorId": 1,
-//                 "source": "https://storage.googleapis.com/storage-c-art.appspot.com/c-art%2FScreenshot%20(19)1858c22a6a2.png",
-//                 "CategoryId": 1,
-//                 "status": "Active",
-//                 "Previews": [
-//                     {
-//                         "id": 1,
-//                         "sourceUrl": "https://storage.googleapis.com/storage-c-art.appspot.com/c-art%2FScreenshot%20(23)1858c22b321.png",
-//                         "ArtId": 2
-//                     }
-//                 ]
-//             }
-//         }
-//         return request(app)
-//             .post("/arts")
-//             .send(successPost)
+
+//     test("201 - created", async () => {
+//         const response = await request(app)
+//             .post('/arts')
 //             .set(userDummy)
-//             .then((res) => {
-//                 // console.log(res.req);
-//                 expect(res).toEqual(successPost)
-//             })
+//         const { status, body } = response
+//         expect(status).toBe(201)
+//         expect(body).toBeInstanceOf(Object)
+//         expect(body).toHaveProperty('art', expect.any(Object))
 //     })
 
+//     test("400 - missing name", async () => {
+//         jest.mock('multer', () => {
+//             const multer = () => ({
+//                 array: () => {
+//                     return (req, res, next) => {
+//                         req.body = {
+//                             name: null,
+//                             price: 123,
+//                             description: 'mockDesc',
+//                             CategoryId: 1,
+//                             AuthorId: 1,
+//                             status: 'mockStatus',
+
+//                         }
+//                         req.files = [{
+//                             publicUrl: 'mockUrl'
+//                         }]
+//                         return next()
+//                     }
+//                 }
+//             })
+//             multer.memoryStorage = () => jest.fn()
+//             return multer
+//         })
+
+//         const response = await request(app)
+//             .post('/arts')
+//             .set(userDummy)
+//         const { status, body } = response
+//         expect(status).toBe(400)
+//         expect(body).toBeInstanceOf(Object)
+//         expect(body).toHaveProperty('status', 400)
+//         expect(body).toHaveProperty('message', expect.any(String))
+
+//     })
 
 // })
 

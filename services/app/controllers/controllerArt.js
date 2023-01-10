@@ -7,6 +7,7 @@ class ControllerArt {
     try {
       const AuthorId = req.user.id;
       let { name, price, description, CategoryId } = req.body;
+      console.log(req.body);
       // console.log(req.files);
       ////REQ.FILES RECIEVES AN ARRAY OF 4 OBJECTS. FIRST IS SOURCE FOR ART, THE REST IS FOR PREVIEWS
       let art = await Art.create({
