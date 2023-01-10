@@ -11,6 +11,17 @@ class ControllerUser{
                 url: `${USERS_URL}register`,
                 data: { email, password, username }
             })
+            res.json(data)
+        } catch (err) {
+            next(err)
+        }
+    }
+    static async verify(req, res, next){
+        try {
+            const { token } = req.params;
+            const {data} = await axios({
+                url: `${USERS_URL}register/verify/${token}`,
+            })
             res.status(201).json(data)
         } catch (err) {
             next(err)
