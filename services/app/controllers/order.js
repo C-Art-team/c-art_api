@@ -1,5 +1,5 @@
 const { Order, Art } = require('../models')
-const midtransClient = require('midtrans-client');
+const midtransSnap = require('../config/midtrans');
 
 class ControllerOrder {
     static async createOrder(req, res, next) {
@@ -39,11 +39,7 @@ class ControllerOrder {
                 where: { id }
             })
 
-            let snap = new midtransClient.Snap({
-                // Set to true if you want Production Environment (accept real transaction).
-                isProduction: false,
-                serverKey: process.env.MIDTRANS_TOKEN
-            });
+            let snap = midtransSnap
 
             let parameter = {
                 transaction_details: {
