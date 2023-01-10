@@ -149,7 +149,7 @@ class ControllerArt {
       const { price } = req.body;
       const artToUpdate = Art.findByPk(id);
       if (!artToUpdate) throw { name: "NOT FOUND" };
-      if (!price || price <= 0) throw { name: "INVALID INPUT" };
+      if (!price || price < 0) throw { name: "INVALID INPUT" };
 
       const updatedArt = await Art.update(
         {
