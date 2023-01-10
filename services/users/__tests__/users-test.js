@@ -26,6 +26,31 @@ const user = {
   preference: "Image Asset",
 };
 
+beforeAll(async () => {
+  await User.bulkCreate([
+    {
+      email: "kibuellyoi34@gmail.com",
+      password: hashPassword("123456"),
+      username: "kibuelll",
+      preference: "3D Model",
+      address: "Jakarta",
+      phoneNumber: "08123456789",
+      createdAt: new Date(),
+      updatedAt: new Date()
+    },
+    {
+      email: "tonni.lius26@gmail.com",
+      password: hashPassword("123456"),
+      username: "dodol26",
+      preference: "Image Asset",
+      address: "Jakarta",
+      phoneNumber: "08987654321",
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }
+  ]);
+});
+
 beforeEach(() => {
   jest.restoreAllMocks();
 });
@@ -39,9 +64,7 @@ describe("POST /register", () => {
   test("200 - OK", async () => {
     const response = await request(app).post("/register").send(data);
     expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty("id", 1);
-    expect(response.body).toHaveProperty("email", "dodol@gmail.com");
-    expect(response.body).toHaveProperty("username", "dodol");
+    expect(response.body).toHaveProperty("message", `Please check your email to verify dodol@gmail.com`);
   });
 
   test("400 - Bad Request, Null Email", async () => {
@@ -69,6 +92,7 @@ describe("POST /register", () => {
     expect(response.body).toHaveProperty("message", "Invalid email format");
   });
   test("400 - Bad Request, Email already used", async () => {
+    const emailUsed = {...data, email: "tonni.lius26@gmail.com"}
     const response = await request(app).post("/register").send(data);
     expect(response.status).toBe(400);
     expect(response.body).toHaveProperty("status", 400);
@@ -147,14 +171,14 @@ describe("POST /register", () => {
   });
 });
 
-describe("POST /register", () => {
+describe("GET /register/verify/:token", () => {
   const data = {
     email: "dodol@gmail.com",
     password: "123456",
     username: "dodol",
   };
   test("201 - Created", async () => {
-    const response = await request(app).post("/register").send(data);
+    const response = await request(app).get(`/register/verify/${token}`).send(data);
     expect(response.status).toBe(201);
     expect(response.body).toHaveProperty("id", 1);
     expect(response.body).toHaveProperty("email", "dodol@gmail.com");
@@ -163,14 +187,14 @@ describe("POST /register", () => {
 
   test("400 - Bad Request, Null Email", async () => {
     const nullEmail = { ...data, email: null };
-    const response = await request(app).post("/register").send(nullEmail);
+    const response = await request(app).get(`/register/verify/${token}`).send(nullEmail);
     expect(response.status).toBe(400);
     expect(response.body).toHaveProperty("status", 400);
     expect(response.body).toHaveProperty("message", "Email is required");
   });
   test("400 - Bad Request, Empty Email", async () => {
     const emptyEmail = { ...data, email: "" };
-    const response = await request(app).post("/register").send(emptyEmail);
+    const response = await request(app).get(`/register/verify/${token}`).send(emptyEmail);
     expect(response.status).toBe(400);
     expect(response.body).toHaveProperty("status", 400);
     expect(response.body).toHaveProperty(
@@ -180,13 +204,13 @@ describe("POST /register", () => {
   });
   test("400 - Bad Request, Invalid Email format", async () => {
     const invalidEmail = { ...data, email: "dodol" };
-    const response = await request(app).post("/register").send(invalidEmail);
+    const response = await request(app).get(`/register/verify/${token}`).send(invalidEmail);
     expect(response.status).toBe(400);
     expect(response.body).toHaveProperty("status", 400);
     expect(response.body).toHaveProperty("message", "Invalid email format");
   });
   test("400 - Bad Request, Email already used", async () => {
-    const response = await request(app).post("/register").send(data);
+    const response = await request(app).get(`/register/verify/${token}`).send(data);
     expect(response.status).toBe(400);
     expect(response.body).toHaveProperty("status", 400);
     expect(response.body).toHaveProperty("message", "Email already used");
@@ -194,14 +218,14 @@ describe("POST /register", () => {
 
   test("400 - Bad Request, Null Password", async () => {
     const nullPassword = { ...data, password: null };
-    const response = await request(app).post("/register").send(nullPassword);
+    const response = await request(app).get(`/register/verify/${token}`).send(nullPassword);
     expect(response.status).toBe(400);
     expect(response.body).toHaveProperty("status", 400);
     expect(response.body).toHaveProperty("message", "Password is required");
   });
   test("400 - Bad Request, Empty Password", async () => {
     const emptyPassword = { ...data, password: "" };
-    const response = await request(app).post("/register").send(emptyPassword);
+    const response = await request(app).get(`/register/verify/${token}`).send(emptyPassword);
     expect(response.status).toBe(400);
     expect(response.body).toHaveProperty("status", 400);
     expect(response.body).toHaveProperty(
@@ -211,7 +235,7 @@ describe("POST /register", () => {
   });
   test("400 - Bad Request, Password is too short", async () => {
     const shortPassword = { ...data, password: "1234" };
-    const response = await request(app).post("/register").send(shortPassword);
+    const response = await request(app).get(`/register/verify/${token}`).send(shortPassword);
     expect(response.status).toBe(400);
     expect(response.body).toHaveProperty("status", 400);
     expect(response.body).toHaveProperty(
@@ -222,14 +246,14 @@ describe("POST /register", () => {
 
   test("400 - Bad Request, Null Username", async () => {
     const nullUsername = { ...data, username: null };
-    const response = await request(app).post("/register").send(nullUsername);
+    const response = await request(app).get(`/register/verify/${token}`).send(nullUsername);
     expect(response.status).toBe(400);
     expect(response.body).toHaveProperty("status", 400);
     expect(response.body).toHaveProperty("message", "Username is required");
   });
   test("400 - Bad Request, Empty Username", async () => {
     const emptyUsername = { ...data, username: "" };
-    const response = await request(app).post("/register").send(emptyUsername);
+    const response = await request(app).get(`/register/verify/${token}`).send(emptyUsername);
     expect(response.status).toBe(400);
     expect(response.body).toHaveProperty("status", 400);
     expect(response.body).toHaveProperty(
@@ -239,7 +263,7 @@ describe("POST /register", () => {
   });
   test("400 - Bad Request, Username is too short", async () => {
     const shortUsername = { ...data, username: "dodo" };
-    const response = await request(app).post("/register").send(shortUsername);
+    const response = await request(app).get(`/register/verify/${token}`).send(shortUsername);
     expect(response.status).toBe(400);
     expect(response.body).toHaveProperty("status", 400);
     expect(response.body).toHaveProperty(
@@ -249,7 +273,7 @@ describe("POST /register", () => {
   });
   test("400 - Bad Request, Username already used", async () => {
     const usedUsername = { ...data, email: "tonni@gmail.com" };
-    const response = await request(app).post("/register").send(usedUsername);
+    const response = await request(app).get(`/register/verify/${token}`).send(usedUsername);
     expect(response.status).toBe(400);
     expect(response.body).toHaveProperty("status", 400);
     expect(response.body).toHaveProperty("message", "Username already used");
@@ -257,7 +281,7 @@ describe("POST /register", () => {
 
   test("500 - Internal Server Error", async () => {
     jest.spyOn(User, "create").mockRejectedValue("Error");
-    const response = await request(app).post("/register").send(data);
+    const response = await request(app).get(`/register/verify/${token}`).send(data);
     expect(response.status).toBe(500);
     expect(response.body).toHaveProperty("status", 500);
     expect(response.body).toHaveProperty("message", "Internal Server Error");
