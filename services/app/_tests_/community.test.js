@@ -21,16 +21,17 @@ describe("FINDALL /communities", () => {
             .catch((err) => done(err))
     })
 
-    test("500 - Internal server error", async () => {
+    test("500 - Internal server error", (done) => {
         jest.spyOn(Community, 'findAll').mockRejectedValue('Error')
-        return request(app)
+        request(app)
             .get('/communities')
             .then((res) => {
                 expect(res.status).toBe(500)
                 expect(res.body).toHaveProperty('message', expect.any(String))
+                done()
             })
             .catch((err) => {
-                console.log(err)
+                done(err)
             })
     })
 })

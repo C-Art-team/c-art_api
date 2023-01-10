@@ -6,10 +6,11 @@ class orderController {
     static async getAllOrders(req, res, next) {
         try {
             const { access_token, user } = req.user;
-            const ordersCache = await redis.get("orders")
-
-            if (ordersCache) res.json(JSON.parse(ordersCache))
-            else {
+            // const ordersCache = await JSON.parse(await redis.get("orders"))
+            // if (ordersCache[0].customedId != user.id) await redis.del("orders")
+            // console.log(ordersCache, '< dari orches');
+            // if (ordersCache) res.json(ordersCache)
+            // else {
                 const { data } = await axios({
                     url: `${APP_URL}orders`,
                     headers: { access_token, ...user }
@@ -17,7 +18,7 @@ class orderController {
                 await redis.set("orders", JSON.stringify(data))
                 res.json(data)
                 // console.log(data);
-            }
+            // }
 
         } catch (error) {
             console.log(error);
@@ -50,7 +51,7 @@ class orderController {
     static async generateMidtransToken(req, res, next) {
         try {
             const { access_token, user } = req.user;
-
+            console.log(user, '<< dari user');
             const { id } = req.params
             const { data } = await axios({
                 method: "get",

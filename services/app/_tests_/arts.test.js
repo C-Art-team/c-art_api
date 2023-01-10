@@ -44,49 +44,15 @@ const inactiveArt = {
     ...artDummy, status: 'Inactive', name: 'name2', AuthorId: 2
 }
 
-const inactiveArt2 = {
-    ...artDummy, status: 'Inactive', name: 'name3', AuthorId: 1
-}
 
-// jest.mock('multer', () => {
-//     const multer = () => ({
-//         array: () => {
-//             return (req, res, next) => {
-//                 req.body = {
-//                     name: 'mockName',
-//                     price: 123,
-//                     description: 'mockDesc',
-//                     CategoryId: 1,
-//                     AuthorId: 1,
-//                     status: 'mockStatus',
-
-//                 }
-//                 req.files = [{
-//                     publicUrl: 'mockUrl'
-//                 }]
-//                 return next()
-//             }
-//         }
-//     })
-//     multer.memoryStorage = () => jest.fn()
-//     return multer
-// })
-
-beforeAll(async () => {
+beforeEach(async () => {
     await Art.create(artDummy)
         .then(_ => {
             return Art.create(inactiveArt)
         })
-        .then(() => {
-
-        })
-        .then(_ => {
-            return Art.create(inactiveArt2)
-        })
 })
 
-
-afterAll(async () => {
+afterEach(async () => {
     await Art.destroy({ truncate: true, cascade: true, restartIdentity: true })
         .then(() => {
             return Preview.destroy({ truncate: true, cascade: true, restartIdentity: true })
@@ -94,57 +60,9 @@ afterAll(async () => {
         .catch((err) => console.log(err))
 })
 
-
-
-// describe("POSTONE /arts", () => {
-
-//     test("201 - created", async () => {
-//         const response = await request(app)
-//             .post('/arts')
-//             .set(userDummy)
-//         const { status, body } = response
-//         expect(status).toBe(201)
-//         expect(body).toBeInstanceOf(Object)
-//         expect(body).toHaveProperty('art', expect.any(Object))
-//     })
-
-//     test("400 - missing name", async () => {
-//         jest.mock('multer', () => {
-//             const multer = () => ({
-//                 array: () => {
-//                     return (req, res, next) => {
-//                         req.body = {
-//                             name: null,
-//                             price: 123,
-//                             description: 'mockDesc',
-//                             CategoryId: 1,
-//                             AuthorId: 1,
-//                             status: 'mockStatus',
-
-//                         }
-//                         req.files = [{
-//                             publicUrl: 'mockUrl'
-//                         }]
-//                         return next()
-//                     }
-//                 }
-//             })
-//             multer.memoryStorage = () => jest.fn()
-//             return multer
-//         })
-
-//         const response = await request(app)
-//             .post('/arts')
-//             .set(userDummy)
-//         const { status, body } = response
-//         expect(status).toBe(400)
-//         expect(body).toBeInstanceOf(Object)
-//         expect(body).toHaveProperty('status', 400)
-//         expect(body).toHaveProperty('message', expect.any(String))
-
-//     })
-
-// })
+beforeEach(() => {
+    jest.restoreAllMocks()
+})
 
 describe("FINDALL /arts", () => {
 
@@ -163,13 +81,28 @@ describe("FINDALL /arts", () => {
             }))
     })
 
-    test("500 - Internal server error", async () => {
-        jest.spyOn(Art, 'findAll').mockRejectedValue('Error')
-        return request(app)
+    test("200 - Success get arts with filter and search", (done) => {
+        request(app)
+            .get("/arts?filter=1&search=abcd")
+            .then((response) => {
+                const { body, status } = response
+                expect(status).toBe(200)
+                expect(Array.isArray(body)).toBeTruthy();
+                done();
+            })
+            .catch((err => {
+                done(err)
+            }))
+    })
+
+    test("500 - Internal server error", (done) => {
+        jest.spyOn(Art, 'findAll').mockRejectedValueOnce('Error')
+        request(app)
             .get('/arts')
             .then((res) => {
                 expect(res.status).toBe(500)
                 expect(res.body).toHaveProperty('message', expect.any(String))
+                done()
             })
             .catch((err) => {
                 console.log(err)
@@ -270,7 +203,7 @@ describe("PATCH /arts/:id", () => {
 
                 expect(status).toBe(400)
                 expect(body).toEqual(expect.any(Object))
-                expect(body).toHaveProperty('message', expect.any(String));
+                expect(body).toHaveProperty('message', 'You must insert the correct input');
                 done()
             })
             .catch((err => done(err)))
@@ -287,13 +220,12 @@ describe("PATCH /arts/:id", () => {
 
                 expect(status).toBe(400)
                 expect(body).toEqual(expect.any(Object))
-                expect(body).toHaveProperty('message', expect.any(String));
+                expect(body).toHaveProperty('message', 'You must insert the correct input');
                 done()
             })
             .catch((err => done(err)))
     })
 
-    // nanti tambahin unauthorized
 })
 
 describe("POST /arts/:id", () => {
@@ -382,14 +314,16 @@ describe("DELETEONE /arts/:id", () => {
     test("401 - Unauthorized", (done) => {
         request(app)
             .delete("/arts/1")
-            .send(userDummy2)
+            .set(userDummy2)
             .then((res) => {
                 const { body, status } = res
                 expect(status).toBe(401)
                 expect(body).toEqual(expect.any(Object))
                 expect(body).toHaveProperty('message', expect.any(String));
+                console.log(body);
                 done()
             })
             .catch((err => done(err)))
     })
+
 })

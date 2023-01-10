@@ -64,18 +64,19 @@ beforeAll(async () => {
                     return Order.create(orderDummy2)
                 })
         })
-        .catch(err => console.log(err))
+        .catch(err => {
+            throw err
+        })
 })
 
 afterAll(async () => {
     await Order.destroy({ truncate: true, cascade: true, restartIdentity: true })
         .then(_ => {
             return Art.destroy({ truncate: true, restartIdentity: true, cascade: true })
-            // .then(_ => {
-            //     return 
-            // })
         })
-        .catch(err => console.log(err))
+        .catch(err => {
+            throw err
+        })
 })
 
 beforeEach(() => {
@@ -99,17 +100,18 @@ describe("FINDALL /orders", () => {
             .catch((err => console.log(err)))
     })
 
-    test("500 - Internal server error", async () => {
-        jest.spyOn(Order, 'findAll').mockRejectedValue('Error')
-        return request(app)
+    test("500 - Internal server error", (done) => {
+        jest.spyOn(Order, 'findAll').mockRejectedValueOnce('Error')
+        request(app)
             .get('/orders')
             .set(userDummy)
             .then((res) => {
                 expect(res.status).toBe(500)
                 expect(res.body).toHaveProperty('message', expect.any(String))
+                done()
             })
             .catch((err) => {
-                console.log(err)
+                done(err)
             })
     })
 
@@ -125,20 +127,6 @@ describe("FINDALL /orders", () => {
                 done();
             })
             .catch((err => console.log(err)))
-    })
-
-    test("500 - Internal server error", async () => {
-        jest.spyOn(Order, 'update').mockRejectedValue('Error')
-        return request(app)
-            .get('/orders')
-            .set(userDummy)
-            .then((res) => {
-                expect(res.status).toBe(500)
-                expect(res.body).toHaveProperty('message', expect.any(String))
-            })
-            .catch((err) => {
-                console.log(err)
-            })
     })
 })
 
@@ -192,20 +180,6 @@ describe("FINDONE /orders", () => {
                 done();
             })
             .catch((err => console.log(err)))
-    })
-
-    test("500 - Internal server error", async () => {
-        jest.spyOn(Order, 'update').mockRejectedValue('Error')
-        return request(app)
-            .get('/orders/1')
-            .set(userDummy)
-            .then((res) => {
-                expect(res.status).toBe(500)
-                expect(res.body).toHaveProperty('message', expect.any(String))
-            })
-            .catch((err) => {
-                console.log(err)
-            })
     })
 })
 
@@ -310,21 +284,6 @@ describe("POSTONE /orders", () => {
             })
             .catch((err => console.log(err)))
     })
-
-    test("500 - Internal server error", async () => {
-        jest.spyOn(Order, 'update').mockRejectedValue('Error')
-        return request(app)
-            .post('/orders')
-            .send(postOrderDummy)
-            .set(userDummy)
-            .then((res) => {
-                expect(res.status).toBe(500)
-                expect(res.body).toHaveProperty('message', expect.any(String))
-            })
-            .catch((err) => {
-                console.log(err)
-            })
-    })
 })
 
 describe("PATCHONE /orders", () => {
@@ -390,18 +349,19 @@ describe("PATCHONE /orders", () => {
             .catch(err => done(err))
     })
 
-    test("500 - Internal server error", async () => {
-        jest.spyOn(Order, 'update').mockRejectedValue('Error')
-        return request(app)
+    test("500 - Internal server error", (done) => {
+        jest.spyOn(Order, 'update').mockRejectedValueOnce('Error')
+        request(app)
             .patch('/orders/2')
             .send()
             .set(userDummy)
             .then((res) => {
                 expect(res.status).toBe(500)
                 expect(res.body).toHaveProperty('message', expect.any(String))
+                done()
             })
             .catch((err) => {
-                console.log(err)
+                done(err)
             })
     })
 })
@@ -465,17 +425,18 @@ describe("DELETEONE /orders", () => {
             .catch(err => done(err))
     })
 
-    test("500 - Internal server error", async () => {
-        jest.spyOn(Order, 'destroy').mockRejectedValue('Error')
-        return request(app)
+    test("500 - Internal server error", (done) => {
+        jest.spyOn(Order, 'destroy').mockRejectedValueOnce('Error')
+        request(app)
             .delete('/orders/2')
             .set(userDummy)
             .then((res) => {
                 expect(res.status).toBe(500)
                 expect(res.body).toHaveProperty('message', expect.any(String))
+                done()
             })
             .catch((err) => {
-                console.log(err)
+                done(err)
             })
     })
 })
@@ -495,19 +456,5 @@ describe("GENERATE TOKEN /pay/:id", () => {
             })
             .catch(err => done(err))
 
-    })
-
-    test("500 - Internal server error", async () => {
-        jest.spyOn(Order, 'findOne').mockRejectedValue('Error')
-        return request(app)
-            .get('/orders/pay/1')
-            .set(userDummy)
-            .then((res) => {
-                expect(res.status).toBe(500)
-                expect(res.body).toHaveProperty('message', expect.any(String))
-            })
-            .catch((err) => {
-                console.log(err)
-            })
     })
 })

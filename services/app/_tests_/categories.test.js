@@ -22,17 +22,18 @@ describe("FINDALL /categories", () => {
             .catch((err => done(err)))
     })
 
-    test("500 - Internal server error", async () => {
-        jest.spyOn(Category, 'findAll').mockRejectedValue('Error')
-        return request(app)
+    test("500 - Internal server error", (done) => {
+        jest.spyOn(Category, 'findAll').mockRejectedValueOnce('Error')
+        request(app)
             .get('/categories')
             .then((res) => {
                 expect(res.status).toBe(500)
                 expect(res.body).toHaveProperty('status', expect.any(Number))
                 expect(res.body).toHaveProperty('message', expect.any(String))
+                done()
             })
             .catch((err) => {
-                console.log(err)
+                done(err)
             })
     })
 })
