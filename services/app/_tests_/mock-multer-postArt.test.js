@@ -31,7 +31,7 @@ jest.mock('multer', () => {
     multer.memoryStorage = () => jest.fn()
     return multer
 })
-k
+
 describe("POSTONE /arts", () => {
 
     test("201 - created", (done) => {

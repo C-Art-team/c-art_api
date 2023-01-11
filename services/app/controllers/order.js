@@ -59,7 +59,6 @@ class ControllerOrder {
             res.status(200).json(midtransToken);
 
         } catch (error) {
-            console.log(error)
             next(error)
         }
     }

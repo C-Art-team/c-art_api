@@ -76,9 +76,7 @@ class ControllerArt {
     try {
 
       let AuthorId = req.user.id
-
       const arts = await Art.findAll({where: {AuthorId}, include:[{model: Preview}, {model:Category}, {model:Order}]})
-
       res.status(200).json(arts)
     } catch (error) {
       next(error)
