@@ -10,7 +10,7 @@ class ControllerOrder {
 
             const artOrdered = await Art.findByPk(artId)
             
-            if (!customerId || amount <= 0 || !artOrdered || artOrdered.AuthorId === +customerId) throw { name: 'INVALID ORDER' }
+            if (!customerId || !artOrdered || artOrdered.AuthorId === +customerId) throw { name: 'INVALID ORDER' }
 
             const newOrder = await Order.create({
                 customerId, artId, amount : 1, status: 'Unpaid', orderDate: new Date()
@@ -19,6 +19,7 @@ class ControllerOrder {
             res.status(201).json(newOrder);
 
         } catch (error) {
+            console.log(error)
             next(error)
         }
 
