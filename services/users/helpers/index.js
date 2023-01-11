@@ -5,7 +5,7 @@ const {
   signRegisterToken,
   verifyRegisterToken,
 } = require("./jsonwebtoken");
-const { verify } = require("./google-auth-library");
+const verify = require("./google-auth-library");
 const { registerVerify } = require("./nodemailer");
 
 module.exports = {
