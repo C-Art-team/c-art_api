@@ -101,7 +101,7 @@ class ControllerArt {
       if(req.body.CategoryId == 5 ){
         //3DMODEL
         if(format !== "fbx" && format !== "obj" && format !== "glb"){
-          throw {response:{data:{message:"3D asset format must be fbx, obj, glb or gltf", status:400}}}
+          throw {response:{data:{message:"3D asset format must be fbx, obj, or glb ", status:400}}}
         }
       }
 
