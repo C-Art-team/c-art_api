@@ -5,19 +5,21 @@ class ControllerOrder {
     static async createOrder(req, res, next) {
         try {
             const customerId = req.user.id
-            const { artId, amount } = req.body
+            const { artId } = req.body
             if (!artId) throw { name: 'INVALID ORDER' }
 
             const artOrdered = await Art.findByPk(artId)
-            if (!customerId || amount <= 0 || !artOrdered || artOrdered.AuthorId == customerId) throw { name: 'INVALID ORDER' }
+            
+            if (!customerId || !artOrdered || artOrdered.AuthorId === +customerId) throw { name: 'INVALID ORDER' }
 
             const newOrder = await Order.create({
-                customerId, artId, amount, status: 'Unpaid', orderDate: new Date()
+                customerId, artId, amount : 1, status: 'Unpaid', orderDate: new Date()
             })
 
             res.status(201).json(newOrder);
 
         } catch (error) {
+            console.log(error)
             next(error)
         }
 
@@ -44,7 +46,7 @@ class ControllerOrder {
                 transaction_details: {
                     // order_id: "YOUR-ORDERID-" + Math.floor(1000000 + Math.random() * 9000000),
                     order_id: `${id}-${new Date().getTime()}`,
-                    gross_amount: (order.Art.price * order.amount)
+                    gross_amount: (order.Art.price)
                 },
                 credit_card: {
                     "secure": true

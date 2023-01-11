@@ -69,11 +69,11 @@ class orderController {
         try {
             const { access_token, user } = req.user;
 
-            const { artId, amount } = req.body
+            const { artId } = req.body
             const { data } = await axios({
                 method: "post",
                 url: `${APP_URL}orders`,
-                data: { artId, amount },
+                data: { artId },
                 headers: { access_token, ...user }
             })
             await redis.del("orders")
