@@ -11,6 +11,7 @@ class orderController {
             // console.log(ordersCache, '< dari orches');
             // if (ordersCache) res.json(ordersCache)
             // else {
+                console.log(access_token)
                 const { data } = await axios({
                     url: `${APP_URL}orders`,
                     headers: { access_token, ...user }
