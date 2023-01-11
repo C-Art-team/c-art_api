@@ -1,5 +1,6 @@
 async function authentication(req, res, next) {
   try {
+    // console.log('sampe authen');
     const { access_token, id, email, username, preference } = req.headers;
     if (!access_token) {
       throw { name: "NO TOKEN" };

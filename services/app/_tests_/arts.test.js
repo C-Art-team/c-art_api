@@ -327,3 +327,19 @@ describe("DELETEONE /arts/:id", () => {
     })
 
 })
+
+describe("FINDALL /myarts", () => {
+    test("200 - Success findAll", (done) => {
+        request(app)
+            .get("/arts/myarts")
+            .set(userDummy)
+            .then((res) => {
+                const { body, status } = res
+                expect(status).toBe(200)
+                expect(Array.isArray(body)).toBeTruthy();
+                expect(body.length).toBeGreaterThan(0);
+                done()
+            })
+            .catch((err => done(err)))
+    })
+})
