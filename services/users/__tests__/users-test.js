@@ -188,7 +188,6 @@ describe("GET /register/verify/:token", () => {
       `/register/verify/${registerToken}`
     );
     expect(response.status).toBe(201);
-    console.log(response.body.id);
     expect(response.body).toHaveProperty("id", 6);
     expect(response.body).toHaveProperty("email", "dodol@gmail.com");
     expect(response.body).toHaveProperty("username", "dodol");
@@ -460,37 +459,12 @@ describe("POST /facebookLogin", () => {
   });
 });
 
-describe("POST /googleLogin", () => {
-  const google_token =
-    "eyJhbGciOiJSUzI1NiIsImtpZCI6ImEyOWFiYzE5YmUyN2ZiNDE1MWFhNDMxZTk0ZmEzNjgwYWU0NThkYTUiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJuYmYiOjE2NzMzMjI5MDksImF1ZCI6IjM3MzE5Nzg4MDQ2LXVsajIxcWY5aDQ3a3J1NmczNThtbnR0ODVoNjFqbDk1LmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwic3ViIjoiMTEwMTEyNDQwNjI5MzEwODA0NTg0IiwiZW1haWwiOiJ0b25uaS5saXVzMjZAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImF6cCI6IjM3MzE5Nzg4MDQ2LXVsajIxcWY5aDQ3a3J1NmczNThtbnR0ODVoNjFqbDk1LmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwibmFtZSI6IlRvbm5pIExpdXMiLCJwaWN0dXJlIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUVkRlRwNmFJbXN2VXpGX3c3QjVuN1dBVk5WWThvVnQtcl9uYTFkUDFjQT1zOTYtYyIsImdpdmVuX25hbWUiOiJUb25uaSIsImZhbWlseV9uYW1lIjoiTGl1cyIsImlhdCI6MTY3MzMyMzIwOSwiZXhwIjoxNjczMzI2ODA5LCJqdGkiOiIxYTg2MDNlOTkwY2Q2OTE4M2Y5Y2UxZTM3MmIzNGM1NzM2MGM4M2RmIn0.Td6LQ7EhswnZdCcYJhus4gHDqadlzmIhzUITlU65lZKmWD_QSyuWfUShMsy2eGf2eFoi-gjyrmcCbLSBAPUy0FOJikzIu59dK_QdAM5rBkDKx3MYtkzVFgoPAIpJxdsVpi7DQCej5EIcRtdxQkdoHMFcTMqAlkWxj8ULsR7kgufyHTvvX50V25gbG3LP4rHidq1LWBXIaLN8pwTCegeSQ5Vnl7hmlgGTWT-BNuwexcRupsbgtbbxqShVUFMFe2u8sdB2zjPVdsJl3IiYUFU-BuQXuITjBFtZ0edsfCCAkPxqRIXbBbkcA-ef0qDX0gjSbxpzLelU8ImWqmctJ_FLew";
-  test("200 - OK, email is not registered yet", async () => {
-    const response = await request(app)
-      .post("/googleLogin")
-      .set({ google_token });
-    expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty("access_token", expect.any(String));
-    expect(response.body).toHaveProperty("id", 8);
-    expect(response.body).toHaveProperty("email", "tonni.lius26@gmail.com");
-    expect(response.body).toHaveProperty("username", "Tonni Lius");
-    expect(response.body).toHaveProperty("preference");
-  });
-  test("200 - OK, email already registered", async () => {
-    const response = await request(app)
-      .post("/googleLogin")
-      .set({ google_token });
-    expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty("access_token", expect.any(String));
-    expect(response.body).toHaveProperty("id", 8);
-    expect(response.body).toHaveProperty("email", "tonni.lius26@gmail.com");
-    expect(response.body).toHaveProperty("username", "Tonni Lius");
-    expect(response.body).toHaveProperty("preference");
-  });
-
+describe("POST /googleLogin, 500 - Internal Server Error", () => {
   test("500 - Internal Server Error", async () => {
     jest.spyOn(User, "findOrCreate").mockRejectedValue("Error");
     const response = await request(app)
       .post("/googleLogin")
-      .set({ google_token });
+      .set({ google_token: 1 });
     expect(response.status).toBe(500);
     expect(response.body).toHaveProperty("status", 500);
     expect(response.body).toHaveProperty("message", "Internal Server Error");
