@@ -64,8 +64,8 @@ class ControllerArt {
       const { access_token, user } = req.user;
       let itemData = new FormData();
      
-      let format = req.files[0].originalname.split(".")[1]
-
+      // let format = req.files[0].originalname.split(".")[1]
+      let format = req.files[0].originalname.slice(req.files[0].originalname.length - 3);
       if(req.files.length === 1){
         throw {response: {data: {message:"Previews cannot be empty", status:400}}} 
       }
@@ -79,7 +79,8 @@ class ControllerArt {
         }
 
         previews.map(el => {
-          let prevFormat = el.originalname.split(".")[1]
+          // let prevFormat = el.originalname.split(".")[1]
+          let prevFormat = el.originalname.slice(el.originalname.length - 3);
 
           if ( prevFormat !== "mp3" && prevFormat !== "wav"){
             throw {response:{data:{message:"Music/SFX preview format must be mp3 or wav", status:400}}}
@@ -99,7 +100,7 @@ class ControllerArt {
 
       if(req.body.CategoryId == 5 ){
         //3DMODEL
-        if(format !== "fbx" && format !== "obj" && format !== "glb" && format !== "gltf"){
+        if(format !== "fbx" && format !== "obj" && format !== "glb"){
           throw {response:{data:{message:"3D asset format must be fbx, obj, glb or gltf", status:400}}}
         }
       }
@@ -121,8 +122,10 @@ class ControllerArt {
       
       if(req.body.CategoryId != 1 && req.body.CategoryId != 2){
         previews.map(el => {
-          let prevFormat = el.originalname.split(".")[1]
+          // let prevFormat = el.originalname.split(".")[1]
+          let prevFormat = el.originalname.slice(el.originalname.length - 3);
 
+          console.log(prevFormat);
           if ( prevFormat !== "png" && prevFormat !== "jpg"){
             throw {response:{data:{message:"For non-sound art preview format must be png or jpg", status:400}}}
           }
