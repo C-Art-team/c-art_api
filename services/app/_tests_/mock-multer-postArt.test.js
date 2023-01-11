@@ -31,7 +31,7 @@ jest.mock('multer', () => {
     multer.memoryStorage = () => jest.fn()
     return multer
 })
-
+k
 describe("POSTONE /arts", () => {
 
     test("201 - created", (done) => {
@@ -58,7 +58,6 @@ describe("POSTONE /arts", () => {
                 expect(body).toBeInstanceOf(Object)
                 expect(body).toHaveProperty('status', 400)
                 expect(body).toHaveProperty('message', 'Name is already used')
-                console.log(body);
                 done()
             })
             .catch(err => done(err))
