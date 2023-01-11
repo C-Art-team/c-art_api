@@ -1,10 +1,14 @@
-const { Art, Preview, sequelize, Category } = require("../models");
+const { Art, Preview, sequelize, Category,Order } = require("../models");
 const { Op } = require("sequelize");
 
 class ControllerArt {
   static async createArt(req, res, next) {
     const t = await sequelize.transaction();
     try {
+
+      // console.log(req.isSingle);
+      
+
       const AuthorId = req.user.id;
       let { name, price, description, CategoryId } = req.body;
       ////REQ.FILES RECIEVES AN ARRAY OF 4 OBJECTS. FIRST IS SOURCE FOR ART, THE REST IS FOR PREVIEWS
@@ -19,12 +23,13 @@ class ControllerArt {
       });
 
       let previews = req.files.slice(1);
+     
       let convertedPreviews = previews.map((el) => {
         el.sourceUrl = el.publicUrl;
         el.ArtId = art.dataValues.id;
         return el;
       });
-
+      
       let newPreviews = await Preview.bulkCreate(convertedPreviews);
 
       await t.commit();
@@ -62,6 +67,19 @@ class ControllerArt {
       let arts = await Art.findAll(option);
       // console.log(arts);
       res.status(200).json(arts);
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  static async getMyArt(req,res,next){
+    try {
+
+      let AuthorId = req.user.id
+
+      const arts = await Art.findAll({where: {AuthorId}, include:[{model: Preview}, {model:Category}, {model:Order}]})
+
+      res.status(200).json(arts)
     } catch (error) {
       next(error)
     }
@@ -129,7 +147,7 @@ class ControllerArt {
       const { price } = req.body;
       const artToUpdate = Art.findByPk(id);
       if (!artToUpdate) throw { name: "NOT FOUND" };
-      if (!price || price <= 0) throw { name: "INVALID INPUT" };
+      if (!price || price < 0) throw { name: "INVALID INPUT" };
 
       const updatedArt = await Art.update(
         {

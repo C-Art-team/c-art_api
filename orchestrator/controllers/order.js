@@ -60,6 +60,7 @@ class orderController {
             })
             res.json(data)
         } catch (error) {
+            console.log(error)
             next(error)
         }
     }

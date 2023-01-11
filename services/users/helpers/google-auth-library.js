@@ -10,4 +10,4 @@ async function verify(token) {
   return { email: payload.email, name: payload.name };
 }
 
-module.exports = { verify };
+module.exports = verify;

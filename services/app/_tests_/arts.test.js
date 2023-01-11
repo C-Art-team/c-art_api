@@ -213,7 +213,7 @@ describe("PATCH /arts/:id", () => {
     test("400 - Fail price is less than 0 or 0", (done) => {
         request(app)
             .patch('/arts/1')
-            .send({ price: 0 })
+            .send({ price: -1 })
             .set(userDummy)
             .then((res) => {
                 const { body, status } = res

@@ -1,7 +1,7 @@
 function errorHandler(err, req, res, next) {
   let status = 500;
   let message = "Internal Server Error";
-  console.log(err, "<<<<<err");
+
   if (
     err.name === "SequelizeValidationError" ||
     err.name === "SequelizeUniqueConstraintError"
@@ -29,6 +29,9 @@ function errorHandler(err, req, res, next) {
   } else if (err.name === "UserEmpty") {
     status = 400;
     message = "Username cannot be empty";
+  } else if (err.name === "AlreadyVerified") {
+    status = 400;
+    message = "Email already verified";
   }
 
   res.status(status).json({ status, message });
