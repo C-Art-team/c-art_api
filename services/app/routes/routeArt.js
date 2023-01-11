@@ -8,11 +8,11 @@ const multer = require("multer")
 
 
 
-router.get("/myarts", authentication,ControllerArt.getMyArt )
 router.get("/", ControllerArt.getArts)
+router.get("/myarts", authentication, ControllerArt.getMyArt)
 router.get("/:id", ControllerArt.getOneArt)
 router.use(authentication)
-router.post("/",fileUpload.array("uploadedFile", 4), ControllerArt.createArt)
+router.post("/", fileUpload.array("uploadedFile", 4), ControllerArt.createArt)
 // router.get("/download/:id",ControllerArt.download)
 router.delete("/:id", authorization, ControllerArt.deleteArt)
 router.post("/:id", authorization, ControllerArt.restoreArtStatus)

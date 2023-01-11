@@ -29,8 +29,7 @@ class ControllerOrder {
         try {
             const { id } = req.params
             const email = req.user.email
-            if (!id) throw { name: 'NOT FOUND' }
-
+            
             const order = await Order.findOne({
                 attributes: { exclude: ['createdAt', 'updatedAt'] },
                 include: {
@@ -39,7 +38,8 @@ class ControllerOrder {
                 },
                 where: { id }
             })
-
+            if (!order) throw { name: 'NOT FOUND' }
+            
             let snap = midtransSnap
 
             let parameter = {
@@ -60,6 +60,7 @@ class ControllerOrder {
             res.status(200).json(midtransToken);
 
         } catch (error) {
+            console.log(error);
             next(error)
         }
     }

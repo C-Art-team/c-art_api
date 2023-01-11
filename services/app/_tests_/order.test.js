@@ -185,18 +185,15 @@ describe("FINDONE /orders", () => {
 
 describe("POSTONE /orders", () => {
     const postOrderDummy = {
-        customerId: 1,
         artId: 1,
         amount: 1,
-        status: 'Unpaid',
-        orderDate: new Date()
     }
 
-    test("200 - Success create order", (done) => {
+    test("201 - success create order", (done) => {
         request(app)
             .post("/orders")
             .send(postOrderDummy)
-            .set(userDummy)
+            .set(userDummy2)
             .then((res) => {
                 const { body, status } = res
 
@@ -207,6 +204,24 @@ describe("POSTONE /orders", () => {
                 expect(body).toHaveProperty("amount", expect.any(Number))
                 expect(body).toHaveProperty("status", expect.any(String))
                 expect(body).toHaveProperty("orderDate", expect.any(String))
+                done()
+            })
+            .catch(err => done(err))
+    })
+
+    test("400 - Success create order", (done) => {
+
+        request(app)
+            .post("/orders")
+            .send(postOrderDummy)
+            .set(userDummy)
+            .then((res) => {
+                const { body, status } = res
+
+                expect(status).toBe(400)
+                expect(body).toBeInstanceOf(Object)
+                expect(body).toHaveProperty("status", 400)
+                expect(body).toHaveProperty("message", expect.any(String))
                 done()
             })
             .catch(err => done(err))
@@ -456,5 +471,34 @@ describe("GENERATE TOKEN /pay/:id", () => {
             })
             .catch(err => done(err))
 
+    })
+
+    test("404 - Fail order not found", (done) => {
+        request(app)
+            .get('/orders/pay/999')
+            .set(userDummy)
+            .then((res) => {
+                expect(res.status).toBe(404)
+                expect(res.body).toHaveProperty('message', expect.any(String))
+                done()
+            })
+            .catch((err) => {
+                done(err)
+            })
+    })
+
+    test("500 - Internal server error", (done) => {
+        jest.spyOn(Order, 'findOne').mockRejectedValueOnce('Error')
+        request(app)
+            .get('/orders/pay/2')
+            .set(userDummy)
+            .then((res) => {
+                expect(res.status).toBe(500)
+                expect(res.body).toHaveProperty('message', expect.any(String))
+                done()
+            })
+            .catch((err) => {
+                done(err)
+            })
     })
 })
