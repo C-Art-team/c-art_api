@@ -1,0 +1,13 @@
+FROM node:lts-alpine
+WORKDIR /users
+COPY . .
+RUN npm install --production
+ENV PORT=4001
+ENV NODE_ENV=production
+ENV SECRET=
+ENV DATABASE_URL=
+ENV GOOGLE_CLIENT_ID=
+ENV NODEMAILER_PASS=
+ENV REGISTER_SECRET=
+EXPOSE 4001
+CMD ["npm", "run", "start"]
