@@ -1,4 +1,4 @@
-const { Order, Art } = require('../models')
+const { Order, Art,Category } = require('../models')
 const midtransSnap = require('../config/midtrans');
 
 class ControllerOrder {
@@ -82,13 +82,21 @@ class ControllerOrder {
     static async getAllOrders(req, res, next) {
         try {
             const customerId = req.user.id
+            console.log(req.user,"0-0-0-0-0-0")
             const orders = await Order.findAll({
                 attributes: { exclude: ['createdAt', 'updatedAt'] },
                 include: {
                     model: Art,
+                    include : {
+                        model : Category,
+                        attributes:{
+                            exclude : ['createdAt','updatedAt']
+                        } 
+                    },
                     attributes: { exclude: ['createdAt', 'updatedAt'] }
                 },
-                where: { customerId }
+                where: { customerId },
+                order : [['orderDate','desc']]
             })
             res.status(200).json(orders)
         } catch (error) {
